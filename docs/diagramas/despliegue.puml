@@ -1,0 +1,111 @@
+@startuml Diagrama de Despliegue
+title Diagrama de Despliegue - Infraestructura Docker UDIPSAI
+
+node "Host (Docker Engine)" {
+  
+  node "udipsai-db\n(PostgreSQL 16 Alpine)" as DBContainer {
+    database "udipsai" {
+      [Schema público\n(tablas del sistema)]
+      [Schema modulo_wais\n(tablas de baremos)]
+    }
+    
+    [init script\n01-modulo_wais.sql] as InitScript
+    note right of InitScript
+      Se ejecuta solo en el
+      primer arranque del
+      contenedor. Carga datos
+      de baremos WAIS-IV.
+    end note
+    
+    [Volumen: postgres_data\n/var/lib/postgresql/data]
+  }
+
+  node "udipsai-backend\n(Spring Boot + JRE 17)" as BackContainer {
+    component "UDIPSAI-Backend-1.0.0.jar" as BackJar
+    
+    [SPRING_PROFILES_ACTIVE=prod] as Profile
+    [DB_URL, DB_USERNAME, DB_PASSWORD] as DBEnv
+    [JWT_SECRET, JWT_EXPIRATION] as JWTEnv
+    
+    [Puerto 8080] as Port8080
+    
+    [Volumen: ./uploads\n/uploads] as UploadsVol
+    
+    [Healthcheck:\n/actuator/health] as HealthBack
+  }
+
+  node "udipsai-frontend\n(Nginx Alpine + SPA)" as FrontContainer {
+    component "Nginx :80" as NginxServ
+    
+    [try_files $uri $uri/ /index.html] as NginxConf
+    
+    [static files\n/usr/share/nginx/html] as StaticFiles
+    
+    [Volumen: ./certs\n/etc/nginx/certs:ro] as CertsVol
+    
+    [Puerto 80 (HTTP)] as Port80
+    [Puerto 443 (HTTPS)] as Port443
+  }
+
+}
+
+cloud "Internet" as Net
+
+actor "Usuario\n(Navegador)" as User
+
+' Conexiones de red
+User --> Net : HTTPS
+Net --> Port443 : :443
+Net --> Port80 : :80
+
+' Dependencias entre contenedores
+Port80 --> Port8080 : proxy_pass o\nAPI directa del front
+NginxConf ..> StaticFiles : sirve SPA
+
+BackJar --> Profile : activa perfil prod
+BackJar --> DBEnv : credenciales DB
+BackJar --> JWTEnv : firma JWT
+BackJar --> DBContainer : JDBC :5432
+BackJar --> UploadsVol : archivos subidos
+
+HealthBack ..> BackJar : wget --spider
+DBContainer --> InitScript : ejecuta en\nprimer inicio
+
+' Orquestación
+note top of BackContainer
+  depends_on:
+    database:
+      condition: service_healthy
+  (5 reintentos, intervalo 5s)
+end note
+
+note top of FrontContainer
+  depends_on:
+    backend:
+      condition: service_healthy
+  (10s intervalo, 20s start_period)
+end note
+
+' Build-time
+note left of FrontContainer
+  BUILD ARG:
+  VITE_API_URL -> inyectado
+  como variable de entorno
+  durante npm run build
+  
+  Multi-stage:
+  Stage 1: node:18-alpine
+    npm install + npm run build
+  Stage 2: nginx:stable-alpine
+    copia dist/ a html/
+end note
+
+note left of BackContainer
+  BUILD (multi-stage):
+  Stage 1: maven:3.9.6-eclipse-temurin-17
+    mvn package -DskipTests -B
+  Stage 2: eclipse-temurin:17-jre-focal
+    usuario no-root: appuser
+end note
+
+@enduml

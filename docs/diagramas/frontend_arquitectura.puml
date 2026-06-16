@@ -1,0 +1,213 @@
+@startuml Arquitectura Frontend
+title Diagrama de Componentes - Frontend React UDIPSAI
+
+package "index.html" {
+  [<div id="root">] as Root
+}
+
+package "main.tsx" {
+  [StrictMode] as Strict
+  [ThemeProvider] as ThemeProv
+  [HelmetProvider\n(AppWrapper)] as Helmet
+  [ToastWrapper] as Toast
+}
+
+package "App.tsx" {
+  [AuthProvider] as AuthProv
+  [BrowserRouter] as Router
+  [ScrollToTop] as ScrollTop
+  [useRoutes] as Routes
+}
+
+package "Contextos" {
+  [AuthContext] as AuthCtx
+  note right of AuthCtx
+    Estado:
+    - isAuthenticated
+    - loading
+    - userRole
+    - userName
+    - userIdentity (cédula)
+    - permissions []
+    
+    Métodos:
+    - login(token)
+    - logout()
+    - hasPermission(perm)
+    
+    Decodifica JWT con jwt-decode
+  end note
+  [ThemeContext] as ThemeCtx
+  note right of ThemeCtx
+    - theme: 'light' | 'dark'
+    - toggleTheme()
+    - Persiste en localStorage
+  end note
+  [SidebarContext] as SideCtx
+  note right of SideCtx
+    - isExpanded
+    - isMobileOpen
+    - toggleSidebar()
+  end note
+}
+
+package "Rutas (routes/config.tsx)" {
+  package "Rutas Públicas" {
+    [/signin -> SignIn] as SignInRoute
+    [/* -> NotFound] as NotFoundRoute
+  }
+
+  package "ProtectedRoute" {
+    [verifica isAuthenticated] as AuthCheck
+    [AppLayout] as AppLayout
+    
+    package "PermissionRoute" {
+      [verifica permissions[]] as PermCheck
+        
+      package "Páginas Protegidas (30+ rutas)" {
+        [/ -> Home] as HomePage
+        [/pacientes -> ListaPacientes] as PacPage
+        [/pacientes/nuevo -> NuevosPacientes] as PacNew
+        [/pacientes/editar/:id -> EditarPacientes] as PacEdit
+        [/citas -> Citas] as CitPage
+        [/especialistas -> ListaEspecialistas] as EspPage
+        [/especialistas/nuevo -> NuevosEspecialistas] as EspNew
+        [/especialistas/editar/:id -> EditarEspecialistas] as EspEdit
+        [/asignaciones -> AsignacionesEspecialistas] as AsigPage
+        [/pasantes -> ListaPasantes] as PasPage
+        [/pasantes/nuevo -> NuevosPasantes] as PasNew
+        [/pasantes/editar/:id -> EditarPasantes] as PasEdit
+        [/instituciones -> ListaInstituciones] as InsPage
+        [/sedes -> ListaSedes] as SedPage
+        [/especialidades -> ListaEspecialidades] as EspePage
+        [/fichas -> ListaFichasUnificadas] as FicPage
+        [/fichas/wais -> WaisEvaluacion] as WaisPage
+        [/fichas/historia-clinica/nuevo -> NuevaHC] as HCNew
+        [/fichas/historia-clinica/editar/:id -> EditarHC] as HCEdit
+        [/fichas/fonoaudiologia/nuevo -> NuevaFono] as FonNew
+        [/fichas/fonoaudiologia/editar/:id -> EditarFono] as FonEdit
+        [/fichas/psicologia-clinica/nuevo -> NuevaPsC] as PsCNew
+        [/fichas/psicologia-clinica/editar/:id -> EditarPsC] as PsCEdit
+        [/fichas/psicologia-educativa/nuevo -> NuevaPsE] as PsENew
+        [/fichas/psicologia-educativa/editar/:id -> EditarPsE] as PsEEdit
+        [/wais -> WaisRepo] as WaisRepoPage
+        [/juegos -> JuegosList] as JuegosPage
+        [/juegos/:id -> GamePlayer] as GamePage
+        [/tests -> Tests] as TestPage
+        [/subir-recursos -> SubirRecursos] as RecPage
+        [/reportes-citas -> ReporteCitas] as RepCitPage
+      }
+    }
+  }
+}
+
+package "Layout" {
+  [AppHeader] as Header
+  [AppSidebar] as Sidebar
+  [Backdrop] as Backdrop
+  [UserDropdown] as UserDrop
+  [AuthPageLayout] as AuthLayout
+}
+
+package "Servicios (services/)" {
+  [authService] as AuthServ
+  [pacientesService] as PacServ
+  [citasService] as CitServ
+  [especialistasService] as EspServ
+  [especialidadesService] as EspeServ
+  [pasantesService] as PasServ
+  [institucionesService] as InsServ
+  [sedesService] as SedServ
+  [asignacionesService] as AsigServ
+  [fichasService] as FicServ
+  [evaluacionesService] as EvalServ
+  [seguimientosService] as SegServ
+  [documentosService] as DocServ
+  [recursosService] as RecServ
+  [validators] as ValidServ
+}
+
+package "API Client (api/api.ts)" {
+  [Axios Instance] as Axios
+  
+  package "Interceptors" {
+    [Request Interceptor\nAgrega Bearer Token] as ReqInt
+    [Response Interceptor\nRefresca Token en 401] as ResInt
+  }
+}
+
+package "Componentes UI" {
+  package "common" {
+    [PageMeta, PageBreadCrumb]
+    [ScrollToTop, ComponentCard]
+    [FilterDropdown, PatientSelector]
+    [DashboardResume, PermisosTable]
+    [ThemeTogglerTwo, GridShape]
+    [CalendarBox, TableActionHeader]
+  }
+  package "ui" {
+    [Button, Badge, Dropdown]
+    [Table, Modal, DeleteModal]
+    [Pagination]
+  }
+  package "form" {
+    [Form, Select, Label]
+    [InputField, TextArea]
+    [FileInput, Checkbox, Switch]
+    [FormularioPacientes]
+    [FormularioEspecialistas]
+    [FormularioPasantes]
+    [FormularioHistoriaClinica + 8 sections]
+    [FormularioFonoaudiologia + 6 sections]
+    [FormularioPsicologiaClinica + 9 sections]
+    [FormularioPsicologiaEducativa + 4 sections]
+  }
+  package "modals" {
+    [CitaModal, CitaInfoModal]
+    [InstitucionModal, EspecialidadModal]
+    [SedesModal, AsignacionesModal]
+    [HistoriaClinicaViewModal]
+    [FonoaudiologiaViewModal]
+    [PsicologiaClinicaViewModal]
+    [PsicologiaEducativaViewModal]
+    [PacienteDetalleModal]
+    [PasanteDetalleModal]
+    [PatientSearchModal]
+    [ProfessionalSearchModal]
+    [PatientFichasModal]
+  }
+}
+
+Root --> Strict
+Strict --> ThemeProv
+ThemeProv --> Helmet
+Helmet --> AuthProv
+AuthProv --> Router
+Router --> Routes
+
+SignInRoute --> AuthLayout
+SignInRoute --> AuthServ : login()
+NotFoundRoute --> NotFoundRoute
+
+AuthCheck --> AuthCtx : isAuthenticated?
+AuthCheck ..> SignInRoute : redirect si false
+AppLayout --> Header
+AppLayout --> Sidebar
+AppLayout --> Backdrop
+Header --> UserDrop
+UserDrop --> AuthServ : logout()
+Sidebar --> SideCtx
+SideCtx --> ThemeCtx
+
+PermCheck --> AuthCtx : hasPermission()?
+PermCheck ..> HomePage : redirect si false
+
+"Páginas Protegidas (30+ rutas)" --> "Servicios (services/)" : llamadas API
+"Servicios (services/)" --> Axios : usa instancia compartida
+Axios --> ReqInt : intercepta request
+Axios --> ResInt : intercepta response
+ResInt ..> AuthServ : refresh token en 401
+
+Axios --> "API REST Backend" : HTTP
+
+@enduml

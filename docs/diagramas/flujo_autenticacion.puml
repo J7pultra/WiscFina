@@ -1,0 +1,105 @@
+@startuml Flujo de Autenticación JWT
+title Diagrama de Secuencia - Autenticación y Autorización UDIPSAI
+
+actor "Usuario\n(Especialista/Pasante)" as User
+participant "Frontend\n(React SPA)" as Front
+participant "API Gateway\n(Nginx)" as Nginx
+participant "JwtAuthFilter" as Filter
+participant "AuthController\n/api/auth" as AuthCtrl
+participant "JwtTokenProvider" as JwtProv
+participant "RefreshTokenService" as RefServ
+participant "CustomUserDetails" as UserDet
+participant "Spring Security\nContext" as SecCtx
+database "PostgreSQL" as DB
+
+== 1. Inicio de Sesión (Login) ==
+User -> Front : Ingresa cédula + contraseña
+Front -> Nginx : POST /api/auth/login\n{username, password}
+Nginx -> Filter : Intercepta petición
+Filter -> Filter : Ruta /api/auth/** es pública\n(permitAll) - No requiere token
+Filter -> AuthCtrl : Deja pasar
+
+AuthCtrl -> AuthCtrl : authenticationManager.authenticate()
+activate AuthCtrl
+AuthCtrl -> UserDet : loadUserByUsername(cedula)
+UserDet -> DB : Busca en especialistas o pasantes\npor cédula
+DB --> UserDet : Especialista/Pasante encontrado
+UserDet -> UserDet : Carga permisos desde Permisos entity\nConvierte a SimpleGrantedAuthority
+UserDet --> AuthCtrl : UserPrincipal (con autoridades)
+AuthCtrl -> AuthCtrl : Verifica contraseña con BCrypt
+AuthCtrl -> JwtProv : generateToken(authentication)
+JwtProv -> JwtProv : Construye JWT con:\n- subject: cedula\n- authorities: [PERM_*, ROLE_*]\n- name: nombresApellidos\n- exp: now + jwt.expiration\n- firma: HMAC-SHA512
+JwtProv --> AuthCtrl : accessToken (JWT)
+
+AuthCtrl -> RefServ : createRefreshToken(cedula)
+RefServ -> DB : INSERT INTO refreshtoken\n(token=UUID, username, expiryDate)
+DB --> RefServ : OK
+RefServ --> AuthCtrl : refreshToken
+
+AuthCtrl --> Front : JwtResponse {\n  accessToken, tokenType="Bearer",\n  refreshToken, username, roles\n}
+deactivate AuthCtrl
+
+Front -> Front : localStorage.setItem("accessToken")\nlocalStorage.setItem("refreshToken")\njwtDecode(token) -> extrae permisos y roles
+Front --> User : Dashboard (autenticado)
+
+== 2. Petición Autenticada ==
+User -> Front : Navega a /pacientes
+Front -> Nginx : GET /api/pacientes/activos\nAuthorization: Bearer <accessToken>
+Nginx -> Filter : Intercepta
+
+Filter -> Filter : Extrae "Bearer <token>" del header
+Filter -> JwtProv : validateToken(token)
+JwtProv -> JwtProv : Verifica firma HMAC-SHA512\nVerifica expiración
+JwtProv --> Filter : token válido
+
+Filter -> JwtProv : getUsernameFromJWT(token)
+JwtProv --> Filter : cedula
+Filter -> UserDet : loadUserByUsername(cedula)
+UserDet --> Filter : UserDetails (con autoridades)
+Filter -> SecCtx : SecurityContextHolder.setAuthentication()
+SecCtx --> Filter : OK
+Filter -> Filter : Continua cadena de filtros
+
+Filter -> "PacienteController\n/api/pacientes" : @PreAuthorize("PERM_PACIENTES")
+"PacienteController\n/api/pacientes" -> "PacienteController\n/api/pacientes" : Verifica autoridad en SecurityContext
+
+== 3. Token Expirado - Refresh ==
+note over Front,DB : Cuando el accessToken expira (HTTP 401)
+
+User -> Front : Acción que requiere API
+Front -> Nginx : GET /api/pacientes\nAuthorization: Bearer <token_expirado>
+Nginx -> Filter : Intercepta
+Filter -> JwtProv : validateToken(token)
+JwtProv --> Filter : FALSE (expiró)
+Filter -> Filter : No establece SecurityContext
+Filter -> "PacienteController\n/api/pacientes" : Continua (sin auth)
+"PacienteController\n/api/pacientes" -> "PacienteController\n/api/pacientes" : @PreAuthorize -> DENEGADO
+"PacienteController\n/api/pacientes" --> Front : HTTP 401 Unauthorized
+
+Front -> Front : Interceptor Axios detecta 401\nNo es login ni refresh\nNo está en cola de espera
+Front -> Front : Encola petición fallida
+Front -> Nginx : POST /api/auth/refresh\n{refreshToken}
+Nginx -> AuthCtrl : refresh()
+AuthCtrl -> RefServ : findByToken(refreshToken)
+RefServ -> DB : SELECT * FROM refreshtoken
+DB --> RefServ : encontrado
+AuthCtrl -> RefServ : verifyExpiration(token)
+RefServ --> AuthCtrl : OK (no expiró)
+AuthCtrl -> UserDet : loadUserByUsername(username)
+UserDet --> AuthCtrl : UserDetails
+AuthCtrl -> JwtProv : generateToken(new Auth)
+JwtProv --> AuthCtrl : nuevo accessToken
+AuthCtrl -> RefServ : deleteByUsername + createRefreshToken
+RefServ -> DB : DELETE old + INSERT new refresh
+DB --> RefServ : OK
+AuthCtrl --> Front : TokenRefreshResponse {\n  accessToken, refreshToken\n}
+
+Front -> Front : Almacena nuevos tokens\nDesencola y reenvía peticiones pendientes
+Front --> User : Datos cargados
+
+== 4. Cierre de Sesión ==
+User -> Front : Click en "Cerrar Sesión"
+Front -> Front : localStorage.removeItem("accessToken")\nlocalStorage.removeItem("refreshToken")\nlocalStorage.removeItem("tokenType")
+Front -> User : Redirige a /signin
+
+@enduml

@@ -1,0 +1,103 @@
+@startuml Arquitectura del Sistema UDIPSAI
+title Diagrama de Componentes - Arquitectura General UDIPSAI
+
+package "Cliente (Navegador)" {
+  [Navegador Web] as Browser
+}
+
+cloud "Internet / LAN" as Net
+
+package "Frontend (React + Vite)" {
+  [Nginx - Puerto 80/443] as Nginx
+  [SPA React 19] as ReactApp
+  note right of ReactApp
+    Build con Vite 6
+    Tailwind CSS 4
+    TypeScript 5.7
+  end note
+
+  package "Contextos React" {
+    [AuthContext] as AuthCtx
+    [ThemeContext] as ThemeCtx
+    [SidebarContext] as SidebarCtx
+  }
+
+  package "Rutas" {
+    [ProtectedRoute] as ProtRoute
+    [PermissionRoute] as PermRoute
+    [Lazy Pages] as LazyPages
+  }
+}
+
+package "Backend (Spring Boot)" {
+  [API REST - Puerto 8080] as Api
+
+  package "Seguridad" {
+    [JwtAuthFilter] as JwtFilter
+    [JwtTokenProvider] as JwtToken
+    [RefreshTokenService] as RefToken
+    [UserDetailsService] as UserDetails
+  }
+
+  package "Módulos de Negocio (19)" {
+    [auth] as MAuth
+    [paciente] as MPac
+    [citas] as MCitas
+    [especialistas] as MEsp
+    [pasante] as MPas
+    [instituciones] as MInst
+    [sedes] as MSedes
+    [especialidad] as MEspec
+    [asignacion] as MAsig
+    [historiaclinica] as MHC
+    [fonoaudiologia] as MFono
+    [psicologiaclinica] as MPC
+    [psicologiaeducativa] as MPE
+    [wais] as MWais
+    [seguimiento] as MSeg
+    [documentos] as MDoc
+    [recurso] as MRec
+    [permisos] as MPerm
+  }
+
+  package "Común" {
+    [GlobalExceptionHandler] as Except
+    [LoggingAspect] as Aspect
+    [PdfService] as PdfServ
+    [ExcelGenerator] as ExcelGen
+    [CedulaValidator] as CedVal
+    [ImagenService] as ImgServ
+  }
+}
+
+database "PostgreSQL 16" {
+  [BD udipsai] as DB
+  [Schema modulo_wais] as WaisSchema
+}
+
+database "Sistema de Archivos" {
+  [uploads/] as Uploads
+}
+
+Browser --> Net : HTTPS
+Net --> Nginx : :80/:443
+Nginx --> ReactApp : serve static
+ReactApp --> Api : REST /api/*
+
+ProtRoute ..> AuthCtx : verifica auth
+PermRoute ..> AuthCtx : verifica permisos
+
+Api --> JwtFilter : intercepta
+JwtFilter --> JwtToken : valida token
+JwtToken --> DB : verifica usuario
+JwtToken --> RefToken : refresh tokens
+
+Api --> "Módulos de Negocio (19)"
+"Módulos de Negocio (19)" --> DB : JPA/Hibernate
+"Módulos de Negocio (19)" --> Uploads : almacena archivos
+MWais --> WaisSchema : baremos WAIS-IV
+PdfServ --> Uploads : lee plantillas
+Except ..> Api : manejo global errores
+Aspect ..> Api : logging AOP
+
+@enduml

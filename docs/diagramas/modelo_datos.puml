@@ -1,0 +1,188 @@
+@startuml Modelo de Datos Principal
+title Diagrama Entidad-Relación - UDIPSAI
+hide circle
+skinparam linetype ortho
+
+entity "pacientes" as Pac {
+  *id : Integer <<PK>>
+  *cedula : String(15) UNIQUE
+  *nombres_apellidos : String
+  *activo : Boolean
+  fecha_apertura : LocalDateTime
+  fecha_nacimiento : LocalDate
+  ciudad : String
+  domicilio : String
+  foto_url : String
+  numero_telefono : String
+  numero_celular : String
+  pertenece_inclusion : Boolean
+  tiene_discapacidad : Boolean
+  portador_carnet : Boolean
+  pertenece_a_proyecto : Boolean
+  diagnostico : String
+  motivo_consulta : String
+  observaciones : String
+  tipo_discapacidad : String
+  detalle_discapacidad : String
+  porcentaje_discapacidad : Integer
+  proyecto : String
+  nivel_educativo : String
+  anio_educacion : String
+  jornada : String
+}
+
+entity "especialistas" as Esp {
+  *id : Integer <<PK>>
+  *cedula : String(15) UNIQUE
+  *nombres_apellidos : String
+  contrasenia : String
+  foto_url : String
+  *activo : Boolean
+}
+
+entity "pasantes" as Pas {
+  *id : Integer <<PK>>
+  *cedula : String(15) UNIQUE
+  *nombres_apellidos : String
+  *contrasenia : String
+  email : String
+  ciudad : String
+  fecha_nacimiento : LocalDate
+  *inicio_pasantia : LocalDate
+  *fin_pasantia : LocalDate
+  domicilio : String
+  foto_url : String
+  numero_telefono : String
+  numero_celular : String
+  *activo : Boolean
+  fecha_apertura : LocalDateTime
+}
+
+entity "citas" as Cit {
+  *id_cita : Integer <<PK>>
+  *fecha : LocalDate
+  *hora_inicio : LocalTime
+  *hora_fin : LocalTime
+  *estado : Estado (ENUM)
+  fecha_creacion : LocalDate
+  fecha_modificacion : LocalDate
+}
+
+entity "especialidades" as Espec {
+  *id : Integer <<PK>>
+  *area : String
+  *activo : Boolean
+}
+
+entity "sedes" as Sed {
+  *id : Integer <<PK>>
+  *nombre : String
+  *activo : Boolean
+}
+
+entity "instituciones_educativas" as Inst {
+  *id : Integer <<PK>>
+  *nombre : String
+  direccion : String
+  telefono : String
+  tipo : String
+  *activo : Boolean
+}
+
+entity "asignaciones" as Asig {
+  *id : Long <<PK>>
+  *activo : Boolean
+}
+
+entity "permisos" as Perm {
+  *id : Long <<PK>>
+  -- 48 campos Boolean para permisos granulares --
+}
+
+entity "historias_clinicas" as HC {
+  *id : Integer <<PK>>
+  *activo : Boolean
+  fecha : Date
+  -- 8 componentes @Embeddable --
+}
+
+entity "fonoaudiologia_registros" as Fono {
+  *id : Integer <<PK>>
+  *activo : Boolean
+  -- 6 componentes @Embeddable --
+}
+
+entity "psicologia_clinica_registros" as PsiC {
+  *id : Integer <<PK>>
+  *activo : Boolean
+  -- 9 componentes @Embeddable --
+}
+
+entity "psicologia_educativa_registros" as PsiE {
+  *id : Integer <<PK>>
+  *activo : Boolean
+  -- 4 componentes @Embeddable --
+}
+
+entity "seguimientos" as Seg {
+  *id : Integer <<PK>>
+  fecha : LocalDate
+  observacion : TEXT
+  *activo : Boolean
+}
+
+entity "documentos" as Doc {
+  *id : Integer <<PK>>
+  *url : String
+  *nombre : String
+  *activo : Boolean
+}
+
+entity "recursos" as Rec {
+  *id : Long <<PK>>
+  *nombre : String
+  descripcion : String
+  tipo : String
+  archivo_nombre : String
+  archivo_url : String
+  *activo : Boolean
+}
+
+entity "refreshtoken" as RT {
+  *id : Long <<PK>>
+  *token : String UNIQUE
+  *username : String
+  *expiryDate : Instant
+}
+
+' === Relaciones PK/FK ===
+Pac ||--o{ Cit : "id_paciente (FK)"
+Pac ||--o{ HC : "paciente_id (FK)"
+Pac ||--o{ Fono : "paciente_id (FK)"
+Pac ||--o{ PsiC : "paciente_id (FK)"
+Pac ||--o{ PsiE : "paciente_id (FK)"
+Pac ||--o{ Seg : "paciente_id (FK)"
+Pac ||--o{ Doc : "paciente_id (FK)"
+Pac }o--|| Sed : "sede_id (FK)"
+Pac }o--|| Inst : "institucion_educativa_id (FK)"
+
+Esp ||--o{ Cit : "id_especialista (FK)"
+Esp }o--|| Espec : "especialidad_id (FK)"
+Esp }o--|| Sed : "sede_id (FK)"
+Esp ||--|| Perm : "permisos_id (FK)"
+Esp ||--o{ Seg : "especialista_id (FK)"
+Esp ||--o{ Pas : "especialista_id (FK)"
+
+Pas ||--o{ Cit : "id_pasante (FK)"
+Pas }o--|| Sed : "sede_id (FK)"
+Pas }o--|| Espec : "especialidad_id (FK)"
+Pas ||--|| Perm : "permisos_id (FK)"
+
+Cit }o--|| Espec : "id_especialidad (FK)"
+
+Asig }o--|| Pac : "paciente_id (FK)"
+Asig }o--|| Pas : "pasante_id (FK)"
+
+Seg }o--|| Doc : "documento_id (FK)"
+
+@enduml

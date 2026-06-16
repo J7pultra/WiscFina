@@ -1,0 +1,222 @@
+@startuml Módulos del Backend
+title Diagrama de Paquetes - Estructura Modular del Backend
+
+package "com.ucacue.udipsai" {
+  [UdipsaiApplication] as Main
+
+  package "config" {
+    [DataSeeder] as Seeder
+    [OpenApiConfig] as Swagger
+    note right of Seeder
+      Crea usuario Admin inicial
+      (cédula: 0101010101)
+      con todos los permisos
+    end note
+  }
+
+  package "common" {
+    package "aspect" {
+      [LoggingAspect] as Aspect
+    }
+    package "exceptions" {
+      [GlobalExceptionHandler] as Except
+      [ErrorResponse] as ErrorResp
+    }
+    package "report" {
+      [PdfService] as PdfServ
+      [ExcelGenerator] as ExcelGen
+    }
+    package "util" {
+      [CedulaValidatorService] as CedVal
+      [ImagenService] as ImgServ
+    }
+  }
+
+  package "infrastructure" {
+    package "security" {
+      [SecurityConfig] as SecConf
+      [JwtAuthFilter] as JwtFilter
+      [JwtTokenProvider] as JwtProv
+      [JwtAuthEntryPoint] as EntryPt
+      [UserPrincipal] as UserPrinc
+      [CustomUserDetails] as UserDet
+      [RefreshToken] as RefTok
+      [RefreshTokenService] as RefServ
+      [RefreshTokenRepository] as RefRep
+    }
+    package "storage" {
+      [StorageService] as StorInterf
+      [FileSystemStorage] as FileStor
+    }
+  }
+
+  package "modules" {
+    package "auth" {
+      [AuthController] as AuthCtrl
+      note right: POST /api/auth/login\nPOST /api/auth/refresh
+    }
+
+    package "paciente (11 archivos)" as PkgPac {
+      [PacienteController] as PacCtrl
+      [PacienteService] as PacServ
+      [PacienteReportService] as PacRep
+      [PacienteRepository] as PacRep
+      [Paciente] as PacEnt
+      [5 DTOs] as PacDtos
+    }
+
+    package "citas (10 archivos)" as PkgCit {
+      [CitaController] as CitCtrl
+      [ReporteCitaController] as RepCitCtrl
+      [CitaService] as CitServ
+      [ReporteCitaService] as RepCitServ
+      [CitaRepository] as CitRep
+      [Cita] as CitEnt
+    }
+
+    package "especialistas (8 archivos)" as PkgEsp {
+      [EspecialistaController] as EspCtrl
+      [EspecialistaService] as EspServ
+      [EspecialistaReportService] as EspRep
+      [EspecialistaRepository] as EspR
+      [Especialista] as EspE
+    }
+
+    package "especialidad (7 archivos)" as PkgEspe {
+      [EspecialidadController] as EspeCtrl
+      [EspecialidadService] as EspeServ
+      [EspecialidadReportService] as EspeRep
+      [EspecialidadRepository] as EspeR
+      [Especialidad] as EspeE
+    }
+
+    package "pasante (9 archivos)" as PkgPas {
+      [PasanteController] as PasCtrl
+      [PasanteService] as PasServ
+      [PasanteReportService] as PasRep
+      [PasanteRepository] as PasR
+      [Pasante] as PasE
+    }
+
+    package "instituciones (7 archivos)" as PkgIns {
+      [InstitucionEducativaController] as InsCtrl
+      [InstitucionEducativaService] as InsServ
+      [InstitucionReportService] as InsRep
+      [InstitucionEducativaRepository] as InsR
+      [InstitucionEducativa] as InsE
+    }
+
+    package "sedes (7 archivos)" as PkgSed {
+      [SedeController] as SedCtrl
+      [SedeService] as SedServ
+      [SedeReportService] as SedRep
+      [SedeRepository] as SedR
+      [Sede] as SedE
+    }
+
+    package "asignacion (7 archivos)" as PkgAsi {
+      [AsignacionController] as AsiCtrl
+      [AsignacionService] as AsiServ
+      [AsignacionSecurityService] as AsiSec
+      [AsignacionRepository] as AsiR
+      [Asignacion] as AsiE
+    }
+
+    package "permisos (4 archivos)" as PkgPerm {
+      [PermisoController] as PermCtrl
+      [PermisoService] as PermServ
+      [Permisos] as PermE
+      [PermisosDTO] as PermDTO
+    }
+
+    package "historiaclinica (15 archivos)" as PkgHC {
+      [HistoriaClinicaController] as HCCtrl
+      [HistoriaClinicaService] as HCServ
+      [HistoriaClinicaReportService] as HCRep
+      [HistoriaClinicaRepository] as HCR
+      [HistoriaClinica] as HCE
+      [8 Embeddables] as HCEmb
+      note right of HCEmb
+        InformacionGeneral
+        DatosFamiliares
+        HistoriaPrenatal/Natal/Postnatal
+        DesarrolloMotor
+        Alimentacion
+        AntecedentesMedicos
+      end note
+    }
+
+    package "fonoaudiologia (13 archivos)" as PkgFon {
+      [FonoaudiologiaController] as FonCtrl
+      [FonoaudiologiaService] as FonServ
+      [FonoaudiologiaReportService] as FonRep
+      [FonoaudiologiaRepository] as FonR
+      [Fonoaudiologia] as FonE
+      [6 Embeddables] as FonEmb
+    }
+
+    package "psicologiaclinica (16 archivos)" as PkgPsC {
+      [PsicologiaClinicaController] as PsCCtrl
+      [PsicologiaClinicaService] as PsCServ
+      [PsicologiaClinicaReportService] as PsCRep
+      [PsicologiaClinicaRepository] as PsCR
+      [PsicologiaClinica] as PsCE
+      [9 Embeddables] as PsCEmb
+    }
+
+    package "psicologiaeducativa (11 archivos)" as PkgPsE {
+      [PsicologiaEducativaController] as PsECtrl
+      [PsicologiaEducativaService] as PsEServ
+      [PsicologiaEducativaReportService] as PsERep
+      [PsicologiaEducativaRepository] as PsER
+      [PsicologiaEducativa] as PsEE
+      [4 Embeddables] as PsEEmb
+    }
+
+    package "wais (17 archivos)" as PkgWais {
+      [WaisController] as WaisCtrl
+      [CalculoService] as CalcServ
+      [NormasService] as NormServ
+      [5 Repositorios] as WaisReps
+      [5 Entidades] as WaisEnts
+      [SqlFileImporterRunner] as WaisRunner
+    }
+
+    package "seguimiento (6 archivos)" as PkgSeg {
+      [SeguimientoController] as SegCtrl
+      [SeguimientoService] as SegServ
+      [SeguimientoRepository] as SegR
+      [Seguimiento] as SegE
+    }
+
+    package "documentos (5 archivos)" as PkgDoc {
+      [DocumentoController] as DocCtrl
+      [DocumentoService] as DocServ
+      [DocumentoRepository] as DocR
+      [Documento] as DocE
+    }
+
+    package "recurso (4 archivos)" as PkgRec {
+      [RecursoController] as RecCtrl
+      [RecursoService] as RecServ
+      [RecursoRepository] as RecR
+      [Recurso] as RecE
+    }
+  }
+}
+
+note bottom of PkgAsi
+  AsignacionSecurityService
+  verifica que un PASANTE
+  solo acceda a pacientes
+  que le fueron asignados
+end note
+
+note bottom of PkgWais
+  Cálculo psicométrico WAIS-IV:
+  1. Conversión crudo -> escalar
+  2. Suma por índice (ICV,IRP,IMT,IVP,CIT)
+  3. Búsqueda de normas (valor, percentil, IC)
+end note
+
+@enduml
