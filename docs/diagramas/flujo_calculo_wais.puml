@@ -1,0 +1,80 @@
+@startuml Flujo de Cálculo WAIS-IV
+title Diagrama de Secuencia - Cálculo de Escala WAIS-IV
+
+actor "Especialista" as Esp
+participant "Frontend\n(WaisEvaluacion)" as Front
+participant "WaisController\nPOST /api/wais/calcular-crudo" as Ctrl
+participant "CalculoService" as CalcServ
+participant "NormasService" as NormServ
+database "PostgreSQL\n(modulo_wais)" as DB
+
+== 1. Ingreso de Datos en Frontend ==
+Esp -> Front : Ingresa edad cronológica del paciente\n(en meses)
+Esp -> Front : Ingresa puntajes crudos por subtest:\n- Cubos, Semejanzas, Dígitos, Matrices,\n  Vocabulario, Aritmética, Búsqueda de símbolos,\n  Puzles visuales, Información, Claves
+
+Front -> Front : Validaciones de rango:\n- Edad: 16-90 años\n- Crudos: rango válido por subtest
+Front -> Front : Calcula edad cronológica en meses\n(fecha_nacimiento - fecha_evaluacion)
+
+== 2. Envío al Backend ==
+Front -> Ctrl : POST /api/wais/calcular-crudo\nCalculationRequest {\n  edadCronologica: 324 (27 años),\n  subtestsCrudos: {\n    "CU": 45, "SE": 32, "DI": 28,\n    "MA": 22, "VO": 40, "AR": 18,\n    "BS": 35, "PV": 20, "IN": 19, "CL": 75\n  }\n}
+
+Ctrl -> CalcServ : calcular(request)
+activate CalcServ
+
+== 3. Paso 1: Conversión Crudo -> Escalar ==
+loop por cada subtest
+  CalcServ -> NormServ : getScaledScore(ageMonths=324,\nsubtestCode="CU", rawScore=45)
+  activate NormServ
+
+  NormServ -> DB : Buscar grupo etario por edad\nFROM wais_age_group\nWHERE 324 BETWEEN min/max
+  DB --> NormServ : ageGroup (ej. "25-29 años")
+
+  NormServ -> DB : Buscar subtest por código\nFROM wais_subtest WHERE code='CU'
+  DB --> NormServ : subtest (id, Cubos)
+
+  NormServ -> DB : Buscar puntuación escalar\nFROM wais_norm_raw_to_scaled\nWHERE age_group_id=X AND subtest_id=Y\nAND raw_score=45
+  DB --> NormServ : scaledScore=12
+
+  NormServ --> CalcServ : 12
+  deactivate NormServ
+end
+
+note right of CalcServ
+  Resultados paso 1:
+  CU=12, SE=14, DI=10, MA=11, VO=13,
+  AR=9, BS=11, PV=10, IN=8, CL=12
+end note
+
+== 4. Paso 2: Cálculo de Sumas por Índice ==
+CalcServ -> DB : Buscar composición de índices\nFROM wais_index_composition\nWHERE index_code IN ('ICV','IRP','IMT','IVP','CIT')
+
+note over CalcServ, DB
+  ICV (Comprensión Verbal) = SE + VO + IN = 14+13+8 = 35
+  IRP (Razonamiento Perceptivo) = CU + MA + PV = 12+11+10 = 33
+  IMT (Memoria de Trabajo) = DI + AR = 10+9 = 19
+  IVP (Velocidad Procesamiento) = BS + CL = 11+12 = 23
+  CIT (CI Total) = suma de los 4 índices = 35+33+19+23 = 110
+end note
+
+== 5. Paso 3: Conversión Suma -> Índice Normativo ==
+loop por cada índice (ICV, IRP, IMT, IVP, CIT)
+  CalcServ -> DB : Buscar norma\nFROM wais_index_norm\nWHERE type='ICV' AND sum_scaled=35
+  DB --> CalcServ : IndexData {\n  indice: 110,\n  percentile: 75,\n  ic90: "105-115",\n  ic95: "103-117"\n}
+end
+
+== 6. Construcción de Respuesta ==
+CalcServ -> CalcServ : Construye CalculationResponse
+deactivate CalcServ
+
+CalcServ --> Ctrl : CalculationResponse
+
+Ctrl --> Front : JSON Response {\n  metadata: {timestamp, edadCronologica},\n  subtests: {\n    "CU": {raw:45, scaled:12},\n    "SE": {raw:32, scaled:14},\n    ...\n  },\n  sumasEscalas: {\n    "ICV": 35, "IRP": 33,\n    "IMT": 19, "IVP": 23, "CIT": 110\n  },\n  resultados: {\n    "ICV": {indice:110, percentile:75, ...},\n    ...\n  }\n}
+
+== 7. Visualización en Frontend ==
+Front -> Front : Procesa respuesta
+Front -> Front : Renderiza tabla de subtests\n(puntaje crudo vs escalar)
+Front -> Front : Renderiza WaisProfileChart\n(gráfico de líneas con índices)
+Front -> Front : Genera informe PDF con jsPDF
+Front --> Esp : Resultados visuales + PDF descargable
+
+@enduml
