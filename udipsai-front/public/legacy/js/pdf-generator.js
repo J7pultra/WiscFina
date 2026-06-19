@@ -137,12 +137,14 @@
 
   /** Encabezado del documento */
   function cabecera(doc, opts) {
-    // opts: { titulo, subtitulo, logo, colorLinea, pw, margin }
+    // opts: { titulo, subtitulo, logo, colorLinea, pw, margin, logoW, logoH }
     var y = opts.margin;
+    var lw = opts.logoW || 20;
+    var lh = opts.logoH || 20;
 
     // Logo
     if (opts.logo) {
-      try { doc.addImage(opts.logo, 'PNG', opts.pw - opts.margin - 20, y - 4, 20, 20); }
+      try { doc.addImage(opts.logo, 'PNG', opts.pw - opts.margin - lw, y - 4, lw, lh); }
       catch (e) { /* ignorar */ }
     }
 
@@ -151,16 +153,22 @@
     doc.setTextColor.apply(doc, C.primario);
     doc.text(opts.titulo, opts.margin, y + 5);
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor.apply(doc, C.muted);
-    doc.text(opts.subtitulo, opts.margin, y + 11);
+    if (opts.subtitulo) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor.apply(doc, C.muted);
+      doc.text(opts.subtitulo, opts.margin, y + 11);
+    }
 
-    y += 16;
+    var lineY = y + 16;
+    if (lh > 20) {
+      lineY = Math.max(lineY, y - 4 + lh + 2);
+    }
+
     doc.setDrawColor.apply(doc, opts.colorLinea);
     doc.setLineWidth(0.7);
-    doc.line(opts.margin, y, opts.pw - opts.margin, y);
-    return y + 4;
+    doc.line(opts.margin, lineY, opts.pw - opts.margin, lineY);
+    return lineY + 4;
   }
 
   /** Caja de datos del paciente */
@@ -253,7 +261,23 @@
         var val = row[ci] != null ? String(row[ci]) : '-';
         var maxCh = Math.floor(col.width / 1.75);
         var txt = trunc(val, maxCh);
+        
         doc.setFont('helvetica', 'normal');
+        doc.setTextColor.apply(doc, C.texto);
+
+        if (col.label === 'Diagnóstico') {
+            var d = val.trim().toLowerCase();
+            if (d === 'muy superior' || d === 'extrem. alto' || d === 'muy alto') doc.setTextColor(14, 165, 233);
+            else if (d === 'superior') doc.setTextColor(16, 185, 129);
+            else if (d === 'medio alto') doc.setTextColor(132, 204, 22);
+            else if (d === 'medio') doc.setTextColor(100, 116, 139);
+            else if (d === 'medio bajo') doc.setTextColor(245, 158, 11);
+            else if (d === 'límite' || d === 'limite') doc.setTextColor(249, 115, 22);
+            else if (d === 'muy bajo' || d === 'extrem. bajo') doc.setTextColor(239, 68, 68);
+            
+            doc.setFont('helvetica', 'bold');
+        }
+
         if (col.align === 'center') {
           doc.text(txt, cx + col.width / 2, y + 4, { align: 'center' });
         } else {
@@ -492,10 +516,10 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'INFORME DE EVALUACION PSICOLOGICA',
-        subtitulo: 'Escala de Inteligencia de Wechsler para Ninos (WISC-V)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Ninos (WISC-V)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.cyan,
-        pw: L.pw, margin: L.margin });
+        pw: L.pw, margin: L.margin, logoW: 46, logoH: 20 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
 
@@ -569,10 +593,10 @@
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'INFORME DE EVALUACION PSICOLOGICA',
-        subtitulo: 'Escala de Inteligencia de Wechsler para Preescolar (WPPSI-IV - Etapa 1: 2:6 - 3:11 anos)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar (WPPSI-IV - Etapa 1: 2:6 - 3:11 anos)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
-        pw: L.pw, margin: L.margin });
+        pw: L.pw, margin: L.margin, logoW: 46, logoH: 20 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -635,10 +659,10 @@
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'INFORME DE EVALUACION PSICOLOGICA',
-        subtitulo: 'Escala de Inteligencia de Wechsler para Preescolar (WPPSI-IV - Etapa 2: 4:0 - 5:11 anos)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar (WPPSI-IV - Etapa 2: 4:0 - 5:11 anos)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.verde,
-        pw: L.pw, margin: L.margin });
+        pw: L.pw, margin: L.margin, logoW: 46, logoH: 20 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -703,10 +727,10 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'INFORME DE EVALUACION PSICOLOGICA',
-        subtitulo: (ev.tipoPrueba || 'Historial') + '  -  Registro Historico',
+      var y = cabecera(doc, { titulo: (ev.tipoPrueba || 'Historial') + '  -  Registro Historico',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: colorLinea,
-        pw: L.pw, margin: L.margin });
+        pw: L.pw, margin: L.margin, logoW: 46, logoH: 20 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;

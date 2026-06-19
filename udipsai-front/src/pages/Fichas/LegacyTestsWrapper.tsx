@@ -48,6 +48,7 @@ export default function LegacyTestsWrapper() {
       
       <div className="w-full bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm" style={{ height: "calc(100vh - 180px)" }}>
         <iframe
+          key={location.pathname}
           ref={iframeRef}
           src={isHistorial ? "/legacy/index.html#historial" : "/legacy/index.html"}
           title="Legacy Tests Dashboard"
