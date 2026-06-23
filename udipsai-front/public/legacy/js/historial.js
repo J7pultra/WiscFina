@@ -129,15 +129,15 @@
     if (!lista) return;
     if (historial.length === 0) {
       lista.innerHTML = `
-        <div style="text-align:center;padding:40px 20px;color:var(--text-muted);">
-          <span class="material-symbols-rounded" style="font-size:52px;display:block;margin-bottom:14px;opacity:0.3;">history_toggle_off</span>
-          <p style="font-size:1rem;margin:0 0 8px;">No hay evaluaciones guardadas aún.</p>
-          <p style="font-size:0.82em;opacity:0.65;">Se guardan automáticamente al calcular resultados.</p>
+        <div style="text-align:center;padding:60px 20px;color:#94a3b8;background:#f8fafc;border-radius:16px;border:2px dashed #e2e8f0;margin-top:20px;">
+          <span class="material-symbols-rounded" style="font-size:64px;display:block;margin-bottom:16px;opacity:0.5;color:#cbd5e1;">history_toggle_off</span>
+          <p style="font-size:1.1rem;margin:0 0 8px;font-weight:600;color:#64748b;">No hay evaluaciones guardadas aún.</p>
+          <p style="font-size:0.9em;opacity:0.8;">Se guardan automáticamente al calcular resultados.</p>
         </div>`;
       return;
     }
 
-    lista.innerHTML = historial.map((ev, idx) => {
+    let filas = historial.map((ev, idx) => {
       const m = meta(ev.tipo);
       const fecha = ev.timestamp
         ? new Date(ev.timestamp).toLocaleDateString('es-ES', {day:'2-digit',month:'short',year:'numeric'})
@@ -147,61 +147,67 @@
         : '';
       const edadMeses = ev.edadMeses || ev.paciente?.edadMeses || 0;
       const edadTexto = edadMeses
-        ? `${Math.floor(edadMeses/12)} años y ${edadMeses%12} meses`
+        ? `${Math.floor(edadMeses/12)} años, ${edadMeses%12} m`
         : '—';
-      return `
-        <div class="hist-card" style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:16px;padding:16px;margin-bottom:12px;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;overflow:hidden;"
-          onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.1)';this.style.borderColor='${m.border}'"
-          onmouseleave="this.style.transform='';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='var(--border-color)'">
-          
-          <!-- Fondo sutil con el color de la prueba -->
-          <div style="position:absolute;top:0;right:0;width:150px;height:150px;background:radial-gradient(circle at top right, ${m.bg}, transparent 70%);opacity:0.8;pointer-events:none;"></div>
 
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;position:relative;z-index:1;">
+      return `
+        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseenter="this.style.background='#f8fafc'" onmouseleave="this.style.background='transparent'">
+          <td style="padding: 16px 20px;">
             <div style="display:flex;align-items:center;gap:14px;">
-              <!-- Avatar moderno -->
-              <div style="width:46px;height:46px;border-radius:12px;background:${m.bg};color:${m.text};display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px ${m.border};">
-                <span class="material-symbols-rounded" style="font-size:26px;">${m.icon}</span>
+              <div style="width:42px;height:42px;border-radius:12px;background:${m.bg};color:${m.text};display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px ${m.border};flex-shrink:0;">
+                <span class="material-symbols-rounded" style="font-size:24px;">${m.icon}</span>
               </div>
               <div>
-                <div style="font-weight:700;font-size:1.1rem;color:var(--text-main);margin-bottom:2px;letter-spacing:-0.01em;">${ev.nombre || ev.paciente?.nombre || 'Sin nombre'}</div>
-                <div style="font-size:0.85em;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+                <div style="font-weight:700;font-size:1.05rem;color:#1e293b;margin-bottom:2px;">${ev.nombre || ev.paciente?.nombre || 'Sin nombre'}</div>
+                <div style="font-size:0.85em;color:#64748b;display:flex;align-items:center;gap:4px;">
                   <span class="material-symbols-rounded" style="font-size:14px;">stethoscope</span>
-                  ${ev.examinador || ev.paciente?.examinador || 'Examinador no especificado'}
+                  ${ev.examinador || ev.paciente?.examinador || 'N/A'}
                 </div>
               </div>
             </div>
-            
-            <!-- Insignia (Badge) -->
-            <div style="background:${m.bg};border:1px solid ${m.border};color:${m.text};padding:4px 12px;border-radius:8px;font-size:0.75rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+          </td>
+          <td style="padding: 16px 20px;">
+            <div style="display:inline-flex;align-items:center;background:${m.bg};border:1px solid ${m.border};color:${m.text};padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:700;text-transform:uppercase;">
               ${ev.tipoPrueba}
             </div>
-          </div>
-          
-          <!-- Micro-datos -->
-          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;position:relative;z-index:1;">
-            <div style="background:var(--bg-main);border:1px solid var(--border-color);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:6px;font-size:0.85em;color:var(--text-muted);">
-              <span class="material-symbols-rounded" style="font-size:16px;color:var(--accent-cyan);">event</span>
-              ${fecha} a las ${hora}
-            </div>
-            <div style="background:var(--bg-main);border:1px solid var(--border-color);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:6px;font-size:0.85em;color:var(--text-muted);">
-              <span class="material-symbols-rounded" style="font-size:16px;color:var(--accent-green);">child_care</span>
+          </td>
+          <td style="padding: 16px 20px;">
+            <div style="font-weight:600;color:#334155;font-size:0.95rem;margin-bottom:2px;">${fecha} <span style="font-weight:400;color:#94a3b8;font-size:0.9em;">${hora}</span></div>
+            <div style="font-size:0.85em;color:#64748b;display:flex;align-items:center;gap:4px;">
+              <span class="material-symbols-rounded" style="font-size:14px;color:#10b981;">child_care</span>
               ${edadTexto}
             </div>
-          </div>
-
-          <!-- Acción -->
-          <div style="position:relative;z-index:1;display:flex;justify-content:flex-end;">
+          </td>
+          <td style="padding: 16px 20px; text-align:right;">
             <button onclick="window.revisarEvaluacion('${ev.id}')"
-              style="padding:8px 20px;background:transparent;color:${m.text};border:1px solid ${m.border};border-radius:10px;font-weight:600;font-size:0.9em;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.02);"
-              onmouseenter="this.style.background='${m.bg}';this.style.transform='translateY(-1px)'" 
-              onmouseleave="this.style.background='transparent';this.style.transform=''">
-              Revisar Resultados
+              style="padding:8px 16px;background:#ffffff;color:#0f172a;border:1px solid #e2e8f0;border-radius:8px;font-weight:600;font-size:0.9em;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;"
+              onmouseenter="this.style.background='#f8fafc';this.style.borderColor='#cbd5e1';this.style.color='${m.text}'" 
+              onmouseleave="this.style.background='#ffffff';this.style.borderColor='#e2e8f0';this.style.color='#0f172a'">
+              Revisar
               <span class="material-symbols-rounded" style="font-size:18px;">arrow_forward</span>
             </button>
-          </div>
-        </div>`;
+          </td>
+        </tr>
+      `;
     }).join('');
+
+    lista.innerHTML = `
+      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+        <table style="width:100%;border-collapse:collapse;text-align:left;">
+          <thead style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+            <tr>
+              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Paciente</th>
+              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Prueba</th>
+              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Fecha y Edad</th>
+              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filas}
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
   // ══════════════════════════════════════════════════════════════════════
@@ -249,7 +255,13 @@
     }
     gsap.killTweensOf([modal, modal.firstElementChild]);
     gsap.to(modal, { autoAlpha: 0, duration: 0.25, ease: 'power2.in',
-      onComplete: () => { modal.style.display = 'none'; } });
+      onComplete: () => { 
+        modal.style.display = 'none'; 
+        // Solucion al bug de cierre vacio:
+        // Re-abrir la lista del historial para que el usuario no se quede en una pantalla negra
+        window.abrirHistorial();
+      } 
+    });
     gsap.to(modal.firstElementChild, { scale: 0.9, y: 30, duration: 0.25, ease: 'power2.in' });
   };
 
