@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/evaluaciones")
+@RequestMapping("/api/wisc/evaluaciones")
 @CrossOrigin(origins = "*")
 public class EvaluacionController {
 
