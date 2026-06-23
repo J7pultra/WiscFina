@@ -516,10 +516,10 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Ninos',
-        subtitulo: '(WISC-V)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Ninos\n(WISC-V)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.cyan,
-        pw: L.pw, margin: L.margin, logoW: 69, logoH: 30 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
 
@@ -593,10 +593,10 @@
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar',
-        subtitulo: '(WPPSI-IV - Etapa 1: 2:6 - 3:11 anos)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar\n(WPPSI-IV - Etapa 1: 2:6 - 3:11 anos)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
-        pw: L.pw, margin: L.margin, logoW: 69, logoH: 30 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -659,10 +659,10 @@
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar',
-        subtitulo: '(WPPSI-IV - Etapa 2: 4:0 - 5:11 anos)',
+      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar\n(WPPSI-IV - Etapa 2: 4:0 - 5:11 anos)',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.verde,
-        pw: L.pw, margin: L.margin, logoW: 69, logoH: 30 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -727,10 +727,10 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: ev.tipoPrueba || 'Historial',
-        subtitulo: 'Registro Historico',
+      var y = cabecera(doc, { titulo: (ev.tipoPrueba ? ev.tipoPrueba + '\n' : 'Historial\n') + 'Registro Historico',
+        subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: colorLinea,
-        pw: L.pw, margin: L.margin, logoW: 69, logoH: 30 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
