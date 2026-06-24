@@ -259,6 +259,7 @@ window.procesarWISC_V = async () => {
         escalar: f.escalar !== null ? f.escalar : '—'
       }));
       window.guardarEnHistorial({
+        id: window._evaluacionIdActual,
         tipo: 'WISC',
         tipoPrueba: 'WISC-V',
         paciente: {
@@ -273,7 +274,9 @@ window.procesarWISC_V = async () => {
         datosGrafica: ['ICV','IVE','IRF','IMT','IVP','CIT'].map(k => indices[k]?.ci || null),
         chartLabels: ['ICV','IVE','IRF','IMT','IVP','CIT'],
         chartColor: '#00d4ff'
-      });
+      }).then(res => {
+        if (res && res.id) window._evaluacionIdActual = res.id;
+      }).catch(err => console.error("Error al guardar WISC-V Legacy:", err));
     }
     
     // Fuerza el dibujo de la gráfica en background para que el PDF esté actualizado aunque no abran el modal

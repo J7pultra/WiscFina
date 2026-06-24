@@ -33,9 +33,26 @@ public class EvaluacionService {
     }
 
     public Map<String, Object> guardarEvaluacion(EvaluacionGuardarDTO dto) {
-        String id = dto.getTipo() + "-" + UUID.randomUUID().toString();
+        String id;
+        boolean isUpdate = false;
+        
+        if (dto.getId() != null && !dto.getId().trim().isEmpty()) {
+            id = dto.getId();
+            isUpdate = true;
+        } else if (dto.getDatosRestantes() != null && dto.getDatosRestantes().containsKey("id") && dto.getDatosRestantes().get("id") != null && !dto.getDatosRestantes().get("id").toString().trim().isEmpty()) {
+            id = dto.getDatosRestantes().get("id").toString();
+            isUpdate = true;
+        } else {
+            id = dto.getTipo() + "-" + UUID.randomUUID().toString();
+        }
 
-        Evaluacion eval = new Evaluacion();
+        Evaluacion eval;
+        if (isUpdate) {
+            eval = evaluacionRepository.findById(id).orElse(new Evaluacion());
+        } else {
+            eval = new Evaluacion();
+        }
+        
         eval.setId(id);
         eval.setTipo(dto.getTipo());
         eval.setTipoPrueba(dto.getTipoPrueba());

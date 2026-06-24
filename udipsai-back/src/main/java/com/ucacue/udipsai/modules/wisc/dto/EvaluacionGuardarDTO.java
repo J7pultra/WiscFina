@@ -17,6 +17,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EvaluacionGuardarDTO {
+    private String id;
+    
     @NotBlank(message = "El tipo de evaluación es obligatorio")
     private String tipo;
     

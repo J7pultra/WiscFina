@@ -17,8 +17,9 @@
   // ── Guardar evaluación (llamado desde cada módulo) ──────────────────
   window.guardarEnHistorial = async function (datos) {
     if (window.apiClinica) {
-      await window.apiClinica.invoke('api:evaluaciones:guardar', datos);
+      return await window.apiClinica.invoke('api:evaluaciones:guardar', datos);
     }
+    return null;
   };
 
   // ── Badge del botón ─────────────────────────────────────────────────

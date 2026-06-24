@@ -262,6 +262,7 @@ window.procesarWPPSI_1 = () => {
       escalar: esc
     }));
     window.guardarEnHistorial({
+      id: window._evaluacionIdActual,
       tipo: 'WPPSI1',
       tipoPrueba: 'WPPSI-IV (Etapa 1)',
       paciente: {
@@ -281,7 +282,9 @@ window.procesarWPPSI_1 = () => {
       datosGrafica: [rICV.ci, rIVE.ci, rIMT.ci, rCIT.ci],
       chartLabels: ['ICV', 'IVE', 'IMT', 'CIT'],
       chartColor: '#0ea5e9'
-    });
+    }).then(res => {
+      if (res && res.id) window._evaluacionIdActual = res.id;
+    }).catch(err => console.error("Error al guardar WPPSI-1:", err));
   }
 };
 

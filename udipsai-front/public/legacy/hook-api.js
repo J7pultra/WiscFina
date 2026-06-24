@@ -96,6 +96,7 @@ async function calcularWISC_UI(){
         };
         const filas = typeof window.obtenerFilasParaGuardar === 'function' ? window.obtenerFilasParaGuardar() : [];
         window.guardarEnHistorial({
+          id: window._evaluacionIdActual,
           tipo: 'WISC',
           tipoPrueba: 'WISC-V',
           paciente: {
@@ -110,7 +111,11 @@ async function calcularWISC_UI(){
           datosGrafica: ['ICV','IVE','IRF','IMT','IVP','CIT'].map(k => resultado.indices[k]?.ci || null),
           chartLabels: ['ICV','IVE','IRF','IMT','IVP','CIT'],
           chartColor: '#00c8ff'
-        });
+        }).then(res => {
+          if (res && res.id) {
+            window._evaluacionIdActual = res.id;
+          }
+        }).catch(err => console.error("Error guardando WISC:", err));
       }
     }
   } catch (e) {

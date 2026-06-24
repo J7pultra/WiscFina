@@ -292,6 +292,7 @@ function renderizarResultadosW2(escalares, sumas, indices) {
         escalar: esc !== null ? esc : '—'
       }));
       window.guardarEnHistorial({
+        id: window._evaluacionIdActual,
         tipo: 'WPPSI2',
         tipoPrueba: 'WPPSI-IV (Etapa 2)',
         paciente: {
@@ -306,7 +307,9 @@ function renderizarResultadosW2(escalares, sumas, indices) {
         datosGrafica: ['ICV','IVE','IRF','IMT','IVP','CIT'].map(k => indices[k]?.ci || null),
         chartLabels: ['ICV','IVE','IRF','IMT','IVP','CIT'],
         chartColor: '#10b981'
-      });
+      }).then(res => {
+        if (res && res.id) window._evaluacionIdActual = res.id;
+      }).catch(err => console.error("Error al guardar WPPSI-2:", err));
     }
 }
 

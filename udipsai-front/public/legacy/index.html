@@ -258,21 +258,21 @@
 <script src="js/db_wppsi_1.js?v=20260528"></script>
 
 <!-- 3. Lógica de cada módulo clínico -->
-<script src="js/logic_wisc.js?v=20260528"></script>
-<script src="js/logic_wppsi_1.js?v=20260528"></script>
-<script src="js/logic_wppsi_2.js?v=20260528"></script>
+<script src="js/logic_wisc.js?v=20260624_3"></script>
+<script src="js/logic_wppsi_1.js?v=20260624_3"></script>
+<script src="js/logic_wppsi_2.js?v=20260624_3"></script>
 
 <!-- 4. Historial Clínico (sin base de datos, localStorage) -->
-<script src="js/historial.js?v=20260624_2"></script>
+<script src="js/historial.js?v=20260624_3"></script>
 
 <!-- 5. Controlador principal (routing, alertas, confirmaciones) -->
-<script src="js/main.js?v=20260602"></script>
+<script src="js/main.js?v=20260624_3"></script>
 
 <!-- 6. Lógica WISC-V legacy (tabla escalares, pintarResumen, etc.) -->
-<script src="logic.js?v=20260602"></script>
+<script src="logic.js?v=20260624_3"></script>
 
 <!-- 7. Hook-API WISC-V (calcularWISC_UI, guardarEvaluacionWISC_UI) -->
-<script type="module" src="hook-api.js?v=20260528c"></script>
+<script type="module" src="hook-api.js?v=20260624_3"></script>
 
 <!-- 8. jsPDF y html2pdf — cargados directamente para garantizar disponibilidad inmediata -->
 <script src="js/jspdf.umd.min.js"></script>
@@ -282,6 +282,8 @@
 <script src="js/pdf-generator.js?v=20260619_3"></script>
 
 <script>
+  window._evaluacionIdActual = null;
+
   async function loadModule(name) {
     const container = document.getElementById('app_modules');
     if (document.getElementById('modulo_' + name)) return; // ya cargado
@@ -322,6 +324,7 @@
   });
 
   window.iniciarNuevaEvaluacion = () => {
+    window._evaluacionIdActual = null;
     const modal = document.getElementById('modal_bienvenida');
     if(modal) modal.style.display = 'none';
   };
