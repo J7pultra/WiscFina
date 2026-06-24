@@ -76,9 +76,9 @@
     
     if (_busquedaTimeout) clearTimeout(_busquedaTimeout);
     _busquedaTimeout = setTimeout(async () => {
-      // Si no hay búsqueda, limitamos a 3 por defecto
-      if (!query.nombre && !query.fecha) query.size = '3';
-      else query.size = '50';
+      // Mostrar hasta 100 por defecto
+      if (!query.nombre && !query.fecha) query.size = '100';
+      else query.size = '100';
 
       const historial = await buscarEnBackend(query);
       renderizarLista(historial);
@@ -110,8 +110,8 @@
     gsap.to(modal, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' });
     gsap.to(modal.firstElementChild, { scale: 1, y: 0, duration: 0.45, ease: 'back.out(1.4)' });
 
-    // Por defecto cargar solo los 3 más recientes
-    const historial = await buscarEnBackend({ size: '3' });
+    // Por defecto cargar hasta las últimas 100
+    const historial = await buscarEnBackend({ size: '100' });
     renderizarLista(historial);
   };
 
