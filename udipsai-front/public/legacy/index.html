@@ -12,7 +12,7 @@
 
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260624_5">
   <style>
     /* Modo historial: oculta pantalla de configuración */
     body.modo-historial #pantalla_configuracion {
@@ -133,18 +133,16 @@
       </div>
 
       <!-- Info del paciente -->
-      <div id="revisar_header_info"
-        style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:10px;padding:14px;margin-bottom:18px;">
-      </div>
+      <div id="revisar_header_info" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:10px;padding:14px;margin-bottom:18px;"></div>
 
       <!-- Tablas y gráfica (en grid de 3 columnas para pantallas anchas) -->
-      <div style="display:grid;grid-template-columns:1fr 1.1fr 1.3fr;gap:24px;align-items:start;">
+      <div class="revisar-modal-grid-layout">
         <!-- Columna 1: Escalares -->
         <div id="revisar_tabla_escalares"></div>
-
+        
         <!-- Columna 2: Índices -->
         <div id="revisar_tabla_indices"></div>
-
+        
         <!-- Columna 3: Gráfica -->
         <div>
           <h4 class="titulo-seccion-informe" style="margin-top:0;">3. Perfil de Puntuaciones Compuestas</h4>
@@ -155,8 +153,7 @@
       </div>
 
       <!-- Botones de acción -->
-      <div
-        style="display:flex;gap:12px;justify-content:flex-end;margin-top:22px;padding-top:16px;border-top:1px solid var(--border-color);">
+      <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:22px;padding-top:16px;border-top:1px solid var(--border-color);">
         <button id="btn_eliminar_evaluacion" onclick="window.eliminarEvaluacionActual()"
           style="margin-right:auto; padding:10px 22px; border-radius:10px; border:1px solid var(--accent-red); background:transparent; color:var(--accent-red); font-weight:600; font-size:0.95rem; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:8px; transition:all 0.15s;"
           onmouseenter="this.style.background='var(--accent-red)'; this.style.color='white'"
@@ -173,6 +170,7 @@
           onmouseleave="this.style.background='transparent'">
           <span class="material-symbols-rounded" style="font-size:18px;">close</span> Cerrar
         </button>
+      </div>
       </div>
     </div>
   </div>
