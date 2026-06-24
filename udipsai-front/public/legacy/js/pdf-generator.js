@@ -525,7 +525,7 @@
 
       var doc = new jsPDF(crearDoc('landscape'));
       var y = cabecera(doc, {
-        titulo: 'Escala de Inteligencia de Wechsler para Niños',
+        titulo: 'Escala de Inteligencia de Wechsler para Niños-V',
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
         pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
@@ -604,7 +604,7 @@
 
       var doc = new jsPDF(crearDoc('landscape'));
       var y = cabecera(doc, {
-        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria',
+        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria-IV',
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
         pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
@@ -672,7 +672,7 @@
 
       var doc = new jsPDF(crearDoc('landscape'));
       var y = cabecera(doc, {
-        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria',
+        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria-IV',
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
         pw: L.pw, margin: L.margin, logoW: 55, logoH: 24

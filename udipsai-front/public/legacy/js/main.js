@@ -186,18 +186,18 @@ window.validarYEnrutar = () => {
   const anos          = Math.floor(meses / 12);
   const mesesRestantes = meses % 12;
   const textoResumen  = `
-    <div style="display:flex; flex-direction:column; gap:0.8rem; align-items:flex-start;">
+    <div style="display:flex; flex-direction:row; gap:2rem; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom: 0.5rem;">
       <span style="display:flex; align-items:center; gap:0.5rem;">
         <span class="material-symbols-rounded" style="font-size:1.2em;">person</span>
-        <span>Paciente: <strong>${nombre}</strong></span>
+        <span><strong>Paciente:</strong> ${nombre}</span>
       </span>
       <span style="display:flex; align-items:center; gap:0.5rem;">
         <span class="material-symbols-rounded" style="font-size:1.2em;">calendar_month</span>
-        <span>Edad: <strong>${anos} años, ${mesesRestantes} meses, ${diasExtra} días</strong></span>
+        <span><strong>Edad:</strong> ${anos} años, ${mesesRestantes} meses, ${diasExtra} días</span>
       </span>
       <span style="display:flex; align-items:center; gap:0.5rem;">
         <span class="material-symbols-rounded" style="font-size:1.2em;">badge</span>
-        <span>Examinador: <strong>${examinador}</strong></span>
+        <span><strong>Examinador:</strong> ${examinador}</span>
       </span>
     </div>
   `;

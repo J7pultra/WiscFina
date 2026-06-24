@@ -4,33 +4,29 @@
 <div id="modulo_wppsi_2" style="display:none;">
   <div class="container" style="position:relative;">
 
-    <button class="btn-volver" onclick="window.regresarAConfiguracion()">
+    <button class="btn-volver" style="position: static; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;" onclick="window.regresarAConfiguracion()">
       <span class="material-symbols-rounded">arrow_back</span> Volver
     </button>
 
-    <div class="clinical-dashboard-layout">
-      <!-- PANEL IZQUIERDO: Información y Botones -->
-      <div class="clinical-sidebar-card">
-        <div class="clinical-header-title">
+    <div class="clinical-dashboard-layout" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+      
+      <!-- PANEL DERECHO/UNIFICADO: Puntuaciones Directas -->
+      <div id="panel_ingreso_w2" class="card" style="width: 100%; max-width: 900px;">
+        
+        <!-- PRIMERO: Título e Info Paciente -->
+        <div class="clinical-header-title" style="justify-content: center; text-align: center; margin-bottom: 20px;">
           <span class="material-symbols-rounded" style="font-size: 44px; color: var(--accent-cyan);">child_care</span>
           <div>
             <h1 style="color: var(--accent-cyan);">WPPSI-IV · Etapa 2</h1>
-            <p>Escala de Inteligencia de Wechsler para Preescolar y Primaria · 4:0 a 5:11 años</p>
+            <p>Escala de Inteligencia de Wechsler para Preescolar y Primaria-IV</p>
           </div>
         </div>
-        <div id="info_resumen_w2" class="patient-info-bar" style="color: var(--accent-cyan); border-color: rgba(155, 44, 44, 0.3); background: rgba(155, 44, 44, 0.05);"></div>
+        
+        <div id="info_resumen_w2" class="patient-info-bar" style="color: var(--text-main); border: none; background: transparent; padding: 0; justify-content: center; margin-bottom: 20px;"></div>
 
-        <button class="btn-opcionales-modern" onclick="window.toggleOpcionalesW2()">
-          <span class="material-symbols-rounded">expand_more</span> Mostrar Subpruebas Opcionales
-        </button>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
-        <button class="btn-procesar-modern" style="margin-top:auto; background: var(--accent-cyan);" onclick="window.procesarWPPSI_2()">
-          <span class="material-symbols-rounded">analytics</span> Calcular Resultados
-        </button>
-      </div>
-
-      <!-- PANEL DERECHO: Puntuaciones Directas -->
-      <div id="panel_ingreso_w2" class="card">
+        <!-- SEGUNDO: Puntuaciones Directas -->
         <h2 style="display:flex; align-items:center; gap:0.5rem; justify-content:center; margin-top:0;">
           <span class="material-symbols-rounded" style="color:var(--accent-cyan);">edit_note</span> Puntuaciones Directas
         </h2>
@@ -78,10 +74,20 @@
             <input class="modern-input" type="number" id="pd_RO_w2" min="0" onchange="window.validarNumero(this)" placeholder="0">
           </div>
         </div>
+
+        <!-- TERCERO: Botones al final -->
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 25px;">
+          <button class="btn-opcionales-modern" style="width: auto; padding: 12px 24px; margin: 0;" onclick="window.toggleOpcionalesW2()">
+            <span class="material-symbols-rounded">expand_more</span> Mostrar Subpruebas Opcionales
+          </button>
+          <button class="btn-procesar-modern" style="width: auto; padding: 12px 24px; margin: 0; background: var(--accent-cyan);" onclick="window.procesarWPPSI_2()">
+            <span class="material-symbols-rounded">analytics</span> Calcular Resultados
+          </button>
+        </div>
       </div>
 
       <!-- Panel de resultados -->
-      <div id="panel_resultados_w2" class="card" style="display:none;">
+      <div id="panel_resultados_w2" class="card" style="display:none; width: 100%; max-width: 900px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
           <h2 style="margin:0;"><span class="material-symbols-rounded" style="color:var(--accent-cyan);">bar_chart</span> Perfil Clínico WPPSI-IV</h2>
           <div style="display:flex;gap:10px;">

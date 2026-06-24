@@ -44,7 +44,7 @@ export default function LegacyTestsWrapper() {
         title="Evaluación Psicométrica (Legacy) | UDIPSAI"
         description="Sistema heredado para evaluaciones WISC y WPPSI"
       />
-      <PageBreadcrumb pageTitle="Evaluación Psicométrica" />
+      <PageBreadcrumb pageTitle="Evaluación WISC-WPPSI" />
       
       <div className="w-full bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm" style={{ height: "calc(100vh - 180px)" }}>
         <iframe
