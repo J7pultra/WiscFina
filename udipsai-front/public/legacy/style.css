@@ -1644,31 +1644,29 @@ button:active {
 }
 
 
+
 /* =========================================================
    RESPONSIVE GRID MODAL REVISIÓN
    ========================================================= */
 .revisar-modal-grid-layout {
   display: grid;
-  grid-template-columns: 0.8fr 1.5fr 1.2fr;
+  grid-template-columns: 1fr 1.6fr;
   gap: 24px;
   align-items: start;
 }
 .revisar-modal-grid-layout > div {
   min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
 }
-
-@media (max-width: 1400px) {
-  .revisar-modal-grid-layout {
-    grid-template-columns: 1fr 1.4fr;
-  }
-  .revisar-modal-grid-layout > div:nth-child(3) {
-    grid-column: 1 / -1;
-    margin-top: 10px;
-  }
+/* Gráfica siempre abajo */
+.revisar-modal-grid-layout > div:nth-child(3) {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  width: 100%;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   .revisar-modal-grid-layout {
     grid-template-columns: 1fr;
   }
