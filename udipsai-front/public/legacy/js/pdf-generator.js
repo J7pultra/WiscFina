@@ -9,17 +9,18 @@
 
   // â”€â”€ Paleta de colores (RGB) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var C = {
-    primario : [15,  52,  96],
-    cyan     : [0,  200, 255],
-    rojoWPP  : [230,  25,  43],
-    verde    : [16,  185, 129],
-    texto    : [30,   41,  59],
-    muted    : [100, 116, 139],
-    borde    : [226, 232, 240],
-    bgSutil  : [248, 250, 252],
-    blanco   : [255, 255, 255],
-    thBg     : [15,   52,  96],
-    thText   : [255, 255, 255]
+    primario: [15, 52, 96],
+    cyan: [0, 200, 255],
+    rojoWPP: [230, 25, 43],
+    verde: [16, 185, 129],
+    texto: [30, 41, 59],
+    muted: [100, 116, 139],
+    borde: [120, 120, 120],
+    bgSutil: [248, 250, 252],
+    blanco: [255, 255, 255],
+    thBg: [255, 255, 255],
+    thText: [30, 30, 30],
+    labelBold: [30, 30, 30]
   };
 
   // â”€â”€ Utilidades â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -38,7 +39,7 @@
   function diag(ci) {
     var v = parseInt(ci);
     if (isNaN(v) || !ci || ci === '-') return '-';
-    if (v < 70)  return 'Extrem. bajo';
+    if (v < 70) return 'Extrem. bajo';
     if (v <= 79) return 'Muy bajo';
     if (v <= 89) return 'Medio bajo';
     if (v <= 109) return 'Medio';
@@ -135,16 +136,19 @@
 
   // â”€â”€ Primitivas de dibujo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  /** Encabezado del documento */
   function cabecera(doc, opts) {
     // opts: { titulo, subtitulo, logo, colorLinea, pw, margin, logoW, logoH }
     var y = opts.margin;
     var lw = opts.logoW || 20;
     var lh = opts.logoH || 20;
 
-    // Logo
+    // Logo (mantener proporción cuadrada del logo original)
+    // >> Para ajustar el tamaño del logo, cambia el valor de logoSize aquí <<
     if (opts.logo) {
-      try { doc.addImage(opts.logo, 'PNG', opts.pw - opts.margin - lw, y - 4, lw, lh); }
+      var logoSize = 33; // Tamaño del logo en mm (cambia este valor para hacerlo más grande o pequeño)
+      lw = logoSize;
+      lh = logoSize;
+      try { doc.addImage(opts.logo, 'PNG', opts.pw - opts.margin - lw, y - 12, lw, lh); }
       catch (e) { /* ignorar */ }
     }
 
@@ -160,10 +164,8 @@
       doc.text(opts.subtitulo, opts.margin, y + 11);
     }
 
+    // Línea separadora fija (no depende del tamaño del logo)
     var lineY = y + 16;
-    if (lh > 20) {
-      lineY = Math.max(lineY, y - 4 + lh + 2);
-    }
 
     doc.setDrawColor.apply(doc, opts.colorLinea);
     doc.setLineWidth(0.7);
@@ -175,10 +177,6 @@
   function cajaPaciente(doc, info, y0, pw, margin) {
     var cw = pw - margin * 2;
     var bh = 21;
-    doc.setFillColor.apply(doc, C.bgSutil);
-    doc.setDrawColor.apply(doc, C.borde);
-    doc.setLineWidth(0.25);
-    doc.roundedRect(margin, y0, cw, bh, 1.5, 1.5, 'FD');
 
     var lx = margin + 3;
     var mx = margin + cw / 2 + 2;
@@ -186,21 +184,21 @@
 
     function celda(label, valor, x, y) {
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor.apply(doc, C.primario);
+      doc.setTextColor.apply(doc, C.labelBold);
       doc.text(label, x, y);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor.apply(doc, C.texto);
-      doc.text(trunc(valor || '-', 38), x + doc.getTextWidth(label) + 1.2, y);
+      doc.text(trunc(valor || '-', 38), x + doc.getTextWidth(label) + 2.5, y);
     }
 
     var y = y0 + 5;
-    celda('Paciente:',       info.nombre      || '-', lx, y);
-    celda('Examinador:',     info.examinador  || '-', mx, y);
+    celda('Paciente:', info.nombre || '-', lx, y);
+    celda('Examinador:', info.examinador || '-', mx, y);
     y += 5;
-    celda('F. Nacimiento:',  info.fechaNac    || '-', lx, y);
-    celda('F. Evaluacion:',  info.fechaEval   || '-', mx, y);
+    celda('Fecha Nacimiento:', info.fechaNac || '-', lx, y);
+    celda('Fecha Evaluacion:', info.fechaEval || '-', mx, y);
     y += 5;
-    celda('Edad:',           info.edad        || '-', lx, y);
+    celda('Edad:', info.edad || '-', lx, y);
 
     return y0 + bh + 3;
   }
@@ -209,7 +207,7 @@
   function seccion(doc, texto, y, x1, x2) {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
-    doc.setTextColor.apply(doc, C.primario);
+    doc.setTextColor.apply(doc, C.labelBold);
     doc.text(texto, x1, y);
     doc.setDrawColor.apply(doc, C.borde);
     doc.setLineWidth(0.2);
@@ -223,14 +221,13 @@
    * rows: Array de Array de valores
    */
   function dibujarTabla(doc, cols, rows, y0, xOff) {
-    var rowH    = 5.5;
+    var rowH = 5.5;
     var headerH = 6.5;
-    var totalW  = cols.reduce(function (s, c) { return s + c.width; }, 0);
+    var totalW = cols.reduce(function (s, c) { return s + c.width; }, 0);
     var y = y0;
+    var lineW = 0.4; // Grosor uniforme para todas las líneas de la tabla
 
-    // Cabecera
-    doc.setFillColor.apply(doc, C.thBg);
-    doc.rect(xOff, y, totalW, headerH, 'F');
+    // Cabecera - fondo blanco y texto
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7);
     doc.setTextColor.apply(doc, C.thText);
@@ -246,13 +243,10 @@
     });
     y += headerH;
 
-    // Filas
+    // Filas - primero dibujar relleno, luego texto
     rows.forEach(function (row, ri) {
       doc.setFillColor.apply(doc, ri % 2 === 0 ? C.blanco : C.bgSutil);
       doc.rect(xOff, y, totalW, rowH, 'F');
-      doc.setDrawColor.apply(doc, C.borde);
-      doc.setLineWidth(0.1);
-      doc.line(xOff, y + rowH, xOff + totalW, y + rowH);
 
       doc.setFontSize(7);
       doc.setTextColor.apply(doc, C.texto);
@@ -261,21 +255,27 @@
         var val = row[ci] != null ? String(row[ci]) : '-';
         var maxCh = Math.floor(col.width / 1.75);
         var txt = trunc(val, maxCh);
-        
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor.apply(doc, C.texto);
+
+        // Primera columna (nombre subprueba/índice) en negrita oscura
+        if (ci === 0) {
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor.apply(doc, C.labelBold);
+        } else {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor.apply(doc, C.texto);
+        }
 
         if (col.label === 'Diagnóstico') {
-            var d = val.trim().toLowerCase();
-            if (d === 'muy superior' || d === 'extrem. alto' || d === 'muy alto') doc.setTextColor(14, 165, 233);
-            else if (d === 'superior') doc.setTextColor(16, 185, 129);
-            else if (d === 'medio alto') doc.setTextColor(132, 204, 22);
-            else if (d === 'medio') doc.setTextColor(100, 116, 139);
-            else if (d === 'medio bajo') doc.setTextColor(245, 158, 11);
-            else if (d === 'límite' || d === 'limite') doc.setTextColor(249, 115, 22);
-            else if (d === 'muy bajo' || d === 'extrem. bajo') doc.setTextColor(239, 68, 68);
-            
-            doc.setFont('helvetica', 'bold');
+          var d = val.trim().toLowerCase();
+          if (d === 'muy superior' || d === 'extrem. alto' || d === 'muy alto') doc.setTextColor(14, 165, 233);
+          else if (d === 'superior') doc.setTextColor(16, 185, 129);
+          else if (d === 'medio alto') doc.setTextColor(132, 204, 22);
+          else if (d === 'medio') doc.setTextColor(100, 116, 139);
+          else if (d === 'medio bajo') doc.setTextColor(245, 158, 11);
+          else if (d === 'límite' || d === 'limite') doc.setTextColor(249, 115, 22);
+          else if (d === 'muy bajo' || d === 'extrem. bajo') doc.setTextColor(239, 68, 68);
+
+          doc.setFont('helvetica', 'bold');
         }
 
         if (col.align === 'center') {
@@ -288,49 +288,57 @@
       y += rowH;
     });
 
-    // Borde exterior
+    // Dibujar TODAS las líneas de la grilla AL FINAL (encima de los rellenos)
     doc.setDrawColor.apply(doc, C.borde);
-    doc.setLineWidth(0.3);
-    doc.rect(xOff, y0, totalW, y - y0);
+    doc.setLineWidth(lineW);
+
+    // Líneas horizontales
+    var totalRows = rows.length;
+    for (var r = 0; r <= totalRows + 1; r++) {
+      var ly = y0 + (r === 0 ? 0 : headerH + (r - 1) * rowH);
+      if (r === 1) ly = y0 + headerH; // línea debajo del header
+      doc.line(xOff, ly, xOff + totalW, ly);
+    }
+    // Línea final inferior
+    doc.line(xOff, y, xOff + totalW, y);
+
+    // Líneas verticales (de arriba a abajo de toda la tabla)
+    var vx = xOff;
+    for (var c = 0; c <= cols.length; c++) {
+      doc.line(vx, y0, vx, y);
+      if (c < cols.length) vx += cols[c].width;
+    }
 
     return y + 2;
   }
 
-  /** Pie de pÃ¡gina */
+  /** Pie de página (desactivado) */
   function pie(doc, prueba, pw, ph, margin) {
-    var fy = ph - 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6);
-    doc.setTextColor.apply(doc, C.muted);
-    doc.text('Generado: ' + new Date().toLocaleString('es-ES') + '  |  Sistema de Evaluacion Clinica UDIPSAI', margin, fy);
-    doc.text(prueba, pw - margin, fy, { align: 'right' });
-    doc.setDrawColor.apply(doc, C.borde);
-    doc.setLineWidth(0.1);
-    doc.line(margin, fy - 2, pw - margin, fy - 2);
+    // No renderizar nada en el pie de página
   }
 
   // â”€â”€ Configuraciones de columnas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var COLS_ESC = [
-    { label: 'Subprueba',   width: 75, align: 'left'   },
-    { label: 'P. Directa',  width: 35, align: 'center' },
-    { label: 'P. Escalar',  width: 35, align: 'center' }
+    { label: 'Subprueba', width: 65, align: 'left' },
+    { label: 'Puntuacion Directa', width: 50, align: 'center' },
+    { label: 'Puntuacion Escalar', width: 50, align: 'center' }
   ];
   var COLS_IDX = [
-    { label: 'Índice',       width: 50, align: 'left'   },
-    { label: 'Suma Esc.',    width: 18, align: 'center' },
-    { label: 'CI',           width: 14, align: 'center' },
-    { label: 'Percentil',    width: 20, align: 'center' },
-    { label: 'IC 95%',       width: 21, align: 'center' },
-    { label: 'Diagnóstico',  width: 22, align: 'center' }
+    { label: 'Escala', width: 42, align: 'left' },
+    { label: 'Suma punt. escalares', width: 28, align: 'center' },
+    { label: 'Punt. compuesta', width: 23, align: 'center' },
+    { label: 'Percentil', width: 20, align: 'center' },
+    { label: 'Intervalo de confianza', width: 28, align: 'center' },
+    { label: 'Diagnóstico', width: 24, align: 'center' }
   ];
 
   var NOMBRES_IDX = {
-    ICV : 'Comprensión Verbal (ICV)',
-    IVE : 'Visoespacial (IVE)',
-    IRF : 'Razonamiento Fluido (IRF)',
-    IMT : 'Memoria de Trabajo (IMT)',
-    IVP : 'Vel. Procesamiento (IVP)',
-    CIT : 'Escala Total (CIT)'
+    ICV: 'Comprensión Verbal (ICV)',
+    IVE: 'Visoespacial (IVE)',
+    IRF: 'Razonamiento Fluido (IRF)',
+    IMT: 'Memoria de Trabajo (IMT)',
+    IVP: 'Vel. Procesamiento (IVP)',
+    CIT: 'Escala Total (CIT)'
   };
 
   // â”€â”€ FunciÃ³n base de generaciÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -340,8 +348,8 @@
 
   function layoutBase() {
     var pw = 297, ph = 210, margin = 10;
-    var leftW  = 145;
-    var gap    = 8;
+    var leftW = 165;
+    var gap = 8;
     var rightX = margin + leftW + gap;
     var rightW = pw - margin - rightX;
     return { pw: pw, ph: ph, margin: margin, leftW: leftW, gap: gap, rightX: rightX, rightW: rightW };
@@ -352,7 +360,7 @@
     try {
       // Extraer datos del chart original
       var datosOriginales = instanciaOriginal.data;
-      var labels   = datosOriginales.labels || [];
+      var labels = datosOriginales.labels || [];
       var datasets = datosOriginales.datasets || [];
 
       if (!labels.length || !datasets.length) return yR;
@@ -363,12 +371,12 @@
 
       // Crear canvas temporal OCULTO con colores modo claro
       var canvasTmp = document.createElement('canvas');
-      canvasTmp.width  = 650;
+      canvasTmp.width = 650;
       canvasTmp.height = 320;
       canvasTmp.style.display = 'none';
       document.body.appendChild(canvasTmp);
 
-      var colorLinea   = ds0.borderColor   || ds0.backgroundColor || '#0f3460';
+      var colorLinea = ds0.borderColor || ds0.backgroundColor || '#0f3460';
       // Si es un color con rgba oscuro, forzar color corporativo
       if (typeof colorLinea === 'string' && colorLinea.includes('rgba') && colorLinea.includes('0.')) {
         colorLinea = '#0f3460';
@@ -404,7 +412,7 @@
           scales: {
             x: {
               ticks: { color: '#334155', font: { size: 11, weight: 'bold' } },
-              grid:  { display: false }
+              grid: { display: false }
             },
             y: {
               min: 40,
@@ -412,14 +420,14 @@
               ticks: {
                 stepSize: 5,
                 autoSkip: false,
-                color: function(ctx) { return (ctx.tick && ctx.tick.value === 100) ? '#ef4444' : '#334155'; },
-                font: function(ctx) { return (ctx.tick && ctx.tick.value === 100) ? { weight: 'bold', size: 14 } : { size: 11 }; }
+                color: function (ctx) { return (ctx.tick && ctx.tick.value === 100) ? '#ef4444' : '#334155'; },
+                font: function (ctx) { return (ctx.tick && ctx.tick.value === 100) ? { weight: 'bold', size: 14 } : { size: 11 }; }
               },
-              grid:  { color: 'rgba(148, 163, 184, 0.1)' }
+              grid: { color: 'rgba(148, 163, 184, 0.1)' }
             }
           }
         },
-        plugins: (function() {
+        plugins: (function () {
           var arr = [{
             id: 'fondoBlanco',
             beforeDraw: function (chart) {
@@ -432,13 +440,13 @@
             }
           }];
           if (instanciaOriginal.config.plugins) {
-            instanciaOriginal.config.plugins.forEach(function(p) { arr.push(p); });
+            instanciaOriginal.config.plugins.forEach(function (p) { arr.push(p); });
           }
           return arr;
         })()
       });
 
-      var imgData = canvasTmp.toDataURL('image/jpeg', 0.95);
+      var imgData = canvasTmp.toDataURL('image/png');
 
       // Limpiar
       chartTmp.destroy();
@@ -446,35 +454,35 @@
 
       // Insertar imagen en PDF
       var h = 85;
-      doc.addImage(imgData, 'JPEG', rightX, yR, rightW, h);
+      doc.addImage(imgData, 'PNG', rightX, yR, rightW, h);
       return yR + h + 3;
 
     } catch (e) {
       console.warn('[PDF] No se pudo generar grÃ¡fica modo claro:', e);
       // Intentar fallback directo
       try {
-        var imgFallback = instanciaOriginal.toBase64Image('image/jpeg', 0.9);
-        doc.addImage(imgFallback, 'JPEG', rightX, yR, rightW, 85);
+        var imgFallback = instanciaOriginal.toBase64Image('image/png');
+        doc.addImage(imgFallback, 'PNG', rightX, yR, rightW, 85);
         return yR + 88;
       } catch (e2) { return yR; }
     }
   }
 
   function infoPaciente() {
-    var nombre    = (document.getElementById('global_nombre_nino')  || {}).value || 'Paciente';
-    var examina   = (document.getElementById('global_examinador')    || {}).value || '-';
-    var fnRaw     = (document.getElementById('global_fecha_nac')     || {}).value;
-    var feRaw     = (document.getElementById('global_fecha_eval')    || {}).value;
-    var meses     = parseInt((document.getElementById('global_edad_meses') || {}).value || 0);
-    var edad      = meses > 0
-      ? (Math.floor(meses / 12) + ' anos y ' + (meses % 12) + ' meses')
+    var nombre = (document.getElementById('global_nombre_nino') || {}).value || 'Paciente';
+    var examina = (document.getElementById('global_examinador') || {}).value || '-';
+    var fnRaw = (document.getElementById('global_fecha_nac') || {}).value;
+    var feRaw = (document.getElementById('global_fecha_eval') || {}).value;
+    var meses = parseInt((document.getElementById('global_edad_meses') || {}).value || 0);
+    var edad = meses > 0
+      ? (Math.floor(meses / 12) + ' a\u00f1os y ' + (meses % 12) + ' meses')
       : '-';
     return {
-      nombre    : nombre,
+      nombre: nombre,
       examinador: examina,
-      fechaNac  : fmtFecha(fnRaw),
-      fechaEval : fmtFecha(feRaw),
-      edad      : edad
+      fechaNac: fmtFecha(fnRaw),
+      fechaEval: fmtFecha(feRaw),
+      edad: edad
     };
   }
 
@@ -483,7 +491,7 @@
     return prefix + '_' + nombre.replace(/\s+/g, '_') + '_' + fecha + '.pdf';
   }
 
-  // â”€â”€ WISC-V â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //************************  Wisc ****************************************************
   function generarPDFWISC() {
     if (!window.wiscCalculado) {
       alerta('Primero calcula los resultados WISC-V.', 'warning');
@@ -495,10 +503,10 @@
       var info = infoPaciente();
 
       var nombresP = {
-        C:'Cubos', S:'Semejanzas', M:'Matrices', D:'Digitos', CL:'Clave de Numeros',
-        V:'Vocabulario', B:'Balanzas', PV:'Puzles Visuales', SD:'Span de Dibujos',
-        BS:'Busqueda de Simbolos', I:'Informacion', LN:'Letras y Numeros',
-        CA:'Cancelacion', CO:'Comprension', A:'Aritmetica'
+        C: 'Cubos', S: 'Semejanzas', M: 'Matrices', D: 'Digitos', CL: 'Clave de Numeros',
+        V: 'Vocabulario', B: 'Balanzas', PV: 'Puzles Visuales', SD: 'Span de Dibujos',
+        BS: 'Busqueda de Simbolos', I: 'Informacion', LN: 'Letras y Numeros',
+        CA: 'Cancelacion', CO: 'Comprension', A: 'Aritmetica'
       };
 
       var filas = typeof window.obtenerFilasParaGuardar === 'function'
@@ -516,10 +524,12 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Ninos\n(WISC-V)',
+      var y = cabecera(doc, {
+        titulo: 'Escala de Inteligencia de Wechsler para Niños',
         subtitulo: '',
-        logo: window._logoBase64 || null, colorLinea: C.cyan,
-        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
+        logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
+      });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
 
@@ -548,7 +558,7 @@
     });
   }
 
-  // â”€â”€ WPPSI-IV Etapa 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //************************  WPPSI-IV Etapa 1 ****************************************************
   function generarPDFWPPSI1() {
     // Verificar que se haya calculado (el modal_body debe tener contenido)
     var panel = document.getElementById('panel_resultados_w1');
@@ -562,7 +572,7 @@
       var L = layoutBase();
       var info = infoPaciente();
 
-      var nombresP = { D:'Dibujos', C:'Cubos', R:'Reconocimiento', I:'Informacion', RO:'Rompecabezas', L:'Localizacion', N:'Nombres' };
+      var nombresP = { D: 'Dibujos', C: 'Cubos', R: 'Reconocimiento', I: 'Informacion', RO: 'Rompecabezas', L: 'Localizacion', N: 'Nombres' };
 
       // Extraer datos de las tablas ya renderizadas en el DOM
       var rowsEsc = [];
@@ -585,18 +595,20 @@
               var icRaw = tds[4] ? tds[4].textContent.trim() : '-';
               var ic = (icRaw !== '-' && !icRaw.includes('%')) ? icRaw + '%' : icRaw;
               rowsIdx.push([tds[0].textContent.trim(), tds[1].textContent.trim(), tds[2].textContent.trim(),
-                tds[3].textContent.trim(), ic,
-                tds[5] ? tds[5].textContent.trim() : diag(tds[2].textContent.trim())]);
+              tds[3].textContent.trim(), ic,
+              tds[5] ? tds[5].textContent.trim() : diag(tds[2].textContent.trim())]);
             }
           });
         }
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar\n(WPPSI-IV - Etapa 1: 2:6 - 3:11 anos)',
+      var y = cabecera(doc, {
+        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria',
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
-        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
+      });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -620,7 +632,7 @@
     });
   }
 
-  // â”€â”€ WPPSI-IV Etapa 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //************************  WPPSI-IV Etapa 2 ****************************************************
   function generarPDFWPPSI2() {
     var panel = document.getElementById('panel_resultados_w2');
     var contenidoEl = document.getElementById('contenido_resultados_w2');
@@ -651,18 +663,20 @@
               var icRaw = tds[4] ? tds[4].textContent.trim() : '-';
               var ic = (icRaw !== '-' && !icRaw.includes('%')) ? icRaw + '%' : icRaw;
               rowsIdx.push([tds[0].textContent.trim(), tds[1].textContent.trim(), tds[2].textContent.trim(),
-                tds[3].textContent.trim(), ic,
-                tds[5] ? tds[5].textContent.trim() : diag(tds[2].textContent.trim())]);
+              tds[3].textContent.trim(), ic,
+              tds[5] ? tds[5].textContent.trim() : diag(tds[2].textContent.trim())]);
             }
           });
         }
       }
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: 'Escala de Inteligencia de Wechsler para Preescolar\n(WPPSI-IV - Etapa 2: 4:0 - 5:11 anos)',
+      var y = cabecera(doc, {
+        titulo: 'Escala de Inteligencia de Wechsler para Preescolar y Primaria',
         subtitulo: '',
-        logo: window._logoBase64 || null, colorLinea: C.verde,
-        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
+        logo: window._logoBase64 || null, colorLinea: C.rojoWPP,
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
+      });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -697,13 +711,13 @@
       alerta('Generando PDF del historial...', 'success');
       var L = layoutBase();
 
-      var nombre    = (ev.paciente && ev.paciente.nombre)     || 'Paciente';
-      var examina   = (ev.paciente && ev.paciente.examinador) || '-';
-      var feRaw     = (ev.paciente && ev.paciente.fechaEval)  || '';
-      var fnRaw     = (ev.paciente && ev.paciente.fechaNac && ev.paciente.fechaNac.trim())
-                        ? ev.paciente.fechaNac.trim() : '';
-      var edadMeses = (ev.paciente && ev.paciente.edadMeses)  || ev.edadMeses || 0;
-      var edad      = edadMeses ? (Math.floor(edadMeses / 12) + ' anos y ' + (edadMeses % 12) + ' meses') : '-';
+      var nombre = (ev.paciente && ev.paciente.nombre) || 'Paciente';
+      var examina = (ev.paciente && ev.paciente.examinador) || '-';
+      var feRaw = (ev.paciente && ev.paciente.fechaEval) || '';
+      var fnRaw = (ev.paciente && ev.paciente.fechaNac && ev.paciente.fechaNac.trim())
+        ? ev.paciente.fechaNac.trim() : '';
+      var edadMeses = (ev.paciente && ev.paciente.edadMeses) || ev.edadMeses || 0;
+      var edad = edadMeses ? (Math.floor(edadMeses / 12) + ' a\u00f1os y ' + (edadMeses % 12) + ' meses') : '-';
 
       var info = { nombre: nombre, examinador: examina, fechaNac: fmtFecha(fnRaw), fechaEval: fmtFecha(feRaw), edad: edad };
 
@@ -727,10 +741,12 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
-      var y = cabecera(doc, { titulo: (ev.tipoPrueba ? ev.tipoPrueba + '\n' : 'Historial\n') + 'Registro Historico',
+      var y = cabecera(doc, {
+        titulo: (ev.tipoPrueba ? ev.tipoPrueba + '\n' : 'Historial\n') + 'Registro Historico',
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: colorLinea,
-        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24 });
+        pw: L.pw, margin: L.margin, logoW: 55, logoH: 24
+      });
 
       y = cajaPaciente(doc, info, y, L.pw, L.margin);
       var yL = y, yR = y;
@@ -759,16 +775,16 @@
   }
 
   // â”€â”€ Registrar en window (sobreescribir funciones anteriores) â”€â”€
-  window.descargarPDFWISC         = generarPDFWISC;
-  window.descargarPDFWPPSI_1      = generarPDFWPPSI1;
-  window.descargarPDFWPPSI_2      = generarPDFWPPSI2;
-  window.generarPDFDesdeRevision  = generarPDFHistorial;
+  window.descargarPDFWISC = generarPDFWISC;
+  window.descargarPDFWPPSI_1 = generarPDFWPPSI1;
+  window.descargarPDFWPPSI_2 = generarPDFWPPSI2;
+  window.generarPDFDesdeRevision = generarPDFHistorial;
 
   // API pÃºblica para debugging
   window.PDFGenerator = {
-    wisc     : generarPDFWISC,
-    wppsi1   : generarPDFWPPSI1,
-    wppsi2   : generarPDFWPPSI2,
+    wisc: generarPDFWISC,
+    wppsi1: generarPDFWPPSI1,
+    wppsi2: generarPDFWPPSI2,
     historial: generarPDFHistorial
   };
 
