@@ -388,7 +388,7 @@
         <div class="table-responsive">
           <table class="tabla-resultados-clinica">
             <thead>
-              <tr><th>Índice</th><th style="text-align:center;">Suma Esc.</th><th style="text-align:center;">CI</th>
+              <tr><th>Índice</th><th style="text-align:center;">Suma Esc.</th><th style="text-align:center;">Puntuación Comp.</th>
               <th style="text-align:center;">Percentil</th><th style="text-align:center;">IC 95%</th><th style="text-align:center;">Diagnóstico</th></tr>
             </thead>
             <tbody>${Object.entries(ev.indices).map(([k, d]) => {
