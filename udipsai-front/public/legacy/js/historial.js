@@ -180,11 +180,11 @@
           </td>
           <td style="padding: 16px 20px; text-align:right;">
             <button onclick="window.revisarEvaluacion('${ev.id}')"
-              style="padding:8px 16px;background:#ffffff;color:#0f172a;border:1px solid #e2e8f0;border-radius:8px;font-weight:600;font-size:0.9em;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;"
+              style="padding:8px 12px;background:#ffffff;color:#0f172a;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;"
+              title="Revisar Resultados"
               onmouseenter="this.style.background='#f8fafc';this.style.borderColor='#cbd5e1';this.style.color='${m.text}'" 
               onmouseleave="this.style.background='#ffffff';this.style.borderColor='#e2e8f0';this.style.color='#0f172a'">
-              Revisar
-              <span class="material-symbols-rounded" style="font-size:18px;">arrow_forward</span>
+              <span class="material-symbols-rounded" style="font-size:20px;">visibility</span>
             </button>
           </td>
         </tr>
