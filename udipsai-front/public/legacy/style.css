@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   /* Color Palette - Light Mode Default */
   --bg-dark: #fbf9f9;
   --bg-surface: rgba(255, 255, 255, 0.98);
@@ -65,7 +65,7 @@ body {
 }
 
 /* =========================================
-   FONDO DINÁMICO E INTERACTIVO (GSAP)
+   FONDO DINÃMICO E INTERACTIVO (GSAP)
    ========================================= */
 .dynamic-background {
   position: fixed;
@@ -95,7 +95,7 @@ body {
   filter: blur(100px);
 }
 
-/* Orbes predefinidos — tonos rojos muy suaves para no saturar */
+/* Orbes predefinidos â€” tonos rojos muy suaves para no saturar */
 .orb-1 {
   background: radial-gradient(circle, #b91c1c 0%, transparent 70%);
   width: 50vw;
@@ -836,7 +836,7 @@ input[type="number"]:hover,
 }
 
 /* =========================================
-   ANIMACIONES ESTÉTICAS Y TRANSICIONES
+   ANIMACIONES ESTÃ‰TICAS Y TRANSICIONES
    ========================================= */
 
 @keyframes fadeSlideUp {
@@ -855,12 +855,12 @@ input[type="number"]:hover,
   100% { box-shadow: 0 4px 14px 0 rgba(255, 42, 95, 0.35); }
 }
 
-/* Aplicar animación de entrada a las cards y paneles principales */
+/* Aplicar animaciÃ³n de entrada a las cards y paneles principales */
 .card, .panel-visible {
   animation: fadeSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Animación de entrada con retraso escalonado para elementos de los formularios */
+/* AnimaciÃ³n de entrada con retraso escalonado para elementos de los formularios */
 .modern-input-row {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -879,7 +879,7 @@ input[type="number"]:hover,
   color: var(--accent-cyan);
 }
 
-/* Tablas con interacciones más vivas */
+/* Tablas con interacciones mÃ¡s vivas */
 .tabla-resultados-clinica tbody tr {
   transition: all 0.25s ease;
 }
@@ -907,16 +907,16 @@ button:active {
   animation: pulseGlow 2s infinite;
 }
 
-/* Suavizar la transición de la cuadrícula al expandirse */
+/* Suavizar la transiciÃ³n de la cuadrÃ­cula al expandirse */
 .grid-main {
   transition: grid-template-columns 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* =========================================
-   HISTORIAL CLÍNICO — Botón + Modales
+   HISTORIAL CLÃNICO â€” BotÃ³n + Modales
    ========================================= */
 
-/* Botón fijo en esquina superior izquierda */
+/* BotÃ³n fijo en esquina superior izquierda */
 #btn_historial_clinico {
   position: fixed;
   top: 20px;
@@ -964,7 +964,7 @@ button:active {
   border-color: rgba(255, 42, 95, 0.4);
 }
 
-/* Modal Historial — card contenedor */
+/* Modal Historial â€” card contenedor */
 .historial-modal-card {
   background: var(--bg-surface);
   backdrop-filter: blur(16px);
@@ -979,7 +979,7 @@ button:active {
   box-shadow: 0 24px 64px rgba(0,0,0,0.45);
 }
 
-/* Modal Revisión — card contenedor */
+/* Modal RevisiÃ³n â€” card contenedor */
 .revisar-modal-card {
   background: var(--bg-surface);
   backdrop-filter: blur(16px);
@@ -1008,7 +1008,7 @@ button:active {
   background: rgba(0,0,0,0.15);
 }
 
-/* Tabla compacta en el modal de revisión */
+/* Tabla compacta en el modal de revisiÃ³n */
 .revisar-modal-card .tabla-resultados-clinica {
   font-size: 0.88em;
   margin-bottom: 0;
@@ -1021,7 +1021,7 @@ button:active {
   padding: 6px 6px;
 }
 
-/* Responsive: colapsar a columna única en pantallas pequeñas */
+/* Responsive: colapsar a columna Ãºnica en pantallas pequeÃ±as */
 @media (max-width: 700px) {
   #btn_historial_clinico span:not(.material-symbols-rounded) {
     display: none;
@@ -1045,12 +1045,12 @@ button:active {
   align-items: start;
 }
 
-/* Aplicar animación de entrada a las cards y paneles principales */
+/* Aplicar animaciÃ³n de entrada a las cards y paneles principales */
 .card, .panel-visible {
   animation: fadeSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Animación de entrada con retraso escalonado para elementos de los formularios */
+/* AnimaciÃ³n de entrada con retraso escalonado para elementos de los formularios */
 .modern-input-row {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -1069,7 +1069,7 @@ button:active {
   color: var(--accent-cyan);
 }
 
-/* Tablas con interacciones más vivas */
+/* Tablas con interacciones mÃ¡s vivas */
 .tabla-resultados-clinica tbody tr {
   transition: all 0.25s ease;
 }
@@ -1097,16 +1097,16 @@ button:active {
   animation: pulseGlow 2s infinite;
 }
 
-/* Suavizar la transición de la cuadrícula al expandirse */
+/* Suavizar la transiciÃ³n de la cuadrÃ­cula al expandirse */
 .grid-main {
   transition: grid-template-columns 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* =========================================
-   HISTORIAL CLÍNICO — Botón + Modales
+   HISTORIAL CLÃNICO â€” BotÃ³n + Modales
    ========================================= */
 
-/* Botón fijo en esquina superior izquierda */
+/* BotÃ³n fijo en esquina superior izquierda */
 #btn_historial_clinico {
   position: fixed;
   top: 20px;
@@ -1154,7 +1154,7 @@ button:active {
   border-color: rgba(14, 165, 233, 0.4);
 }
 
-/* Modal Historial — card contenedor */
+/* Modal Historial â€” card contenedor */
 .historial-modal-card {
   background: var(--bg-surface);
   backdrop-filter: blur(16px);
@@ -1169,7 +1169,7 @@ button:active {
   box-shadow: 0 24px 64px rgba(0,0,0,0.45);
 }
 
-/* Modal Revisión — card contenedor */
+/* Modal RevisiÃ³n â€” card contenedor */
 .revisar-modal-card {
   background: var(--bg-surface);
   backdrop-filter: blur(16px);
@@ -1198,7 +1198,7 @@ button:active {
   background: rgba(0,0,0,0.15);
 }
 
-/* Tabla compacta en el modal de revisión */
+/* Tabla compacta en el modal de revisiÃ³n */
 .revisar-modal-card .tabla-resultados-clinica {
   font-size: 0.88em;
   margin-bottom: 0;
@@ -1211,7 +1211,7 @@ button:active {
   padding: 6px 6px;
 }
 
-/* Responsive: colapsar a columna única en pantallas pequeñas */
+/* Responsive: colapsar a columna Ãºnica en pantallas pequeÃ±as */
 @media (max-width: 700px) {
   #btn_historial_clinico span:not(.material-symbols-rounded) {
     display: none;
@@ -1344,7 +1344,7 @@ button:active {
 }
 
 /* =========================================================
-   RESPONSIVE GLOBALES (TABLET Y MÓVIL)
+   RESPONSIVE GLOBALES (TABLET Y MÃ“VIL)
    ========================================================= */
 .table-responsive {
   width: 100%;
@@ -1406,7 +1406,7 @@ button:active {
 }
 
 /* =====================================================================
-   MODO OSCURO PREMIUM � Sistema UDIPSAI
+   MODO OSCURO PREMIUM — Sistema UDIPSAI
    Activado via: body[data-theme="dark"]
    ===================================================================== */
 
@@ -1427,7 +1427,7 @@ button:active {
   --shadow-glow:     0 0 20px rgba(255, 42, 95, 0.25);
 }
 
-/* --- Fondo global con gradiente ne�n profundo --- */
+/* --- Fondo global con gradiente neón profundo --- */
 [data-theme="dark"] body {
   background-color: #070c18;
   background-image:
@@ -1437,7 +1437,7 @@ button:active {
   background-attachment: fixed;
 }
 
-/* --- Orbes de fondo m�s vibrantes en oscuro --- */
+/* --- Orbes de fondo más vibrantes en oscuro --- */
 [data-theme="dark"] .orb-1 { background: radial-gradient(circle, rgba(255,42,95,0.6) 0%, transparent 70%); opacity: 0.12; mix-blend-mode: screen; }
 [data-theme="dark"] .orb-2 { background: radial-gradient(circle, rgba(120,40,180,0.5) 0%, transparent 70%); opacity: 0.10; mix-blend-mode: screen; }
 [data-theme="dark"] .orb-3 { background: radial-gradient(circle, rgba(30,80,200,0.4) 0%, transparent 70%); opacity: 0.08; mix-blend-mode: screen; }
@@ -1455,7 +1455,7 @@ button:active {
   box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,42,95,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-/* --- Login Card (pantalla de configuraci�n) --- */
+/* --- Login Card (pantalla de configuración) --- */
 [data-theme="dark"] .login-card {
   background: rgba(10, 16, 32, 0.92);
   border: 1px solid rgba(255, 42, 95, 0.2);
@@ -1516,7 +1516,7 @@ button:active {
   font-weight: 700;
 }
 
-/* --- �conos de test --- */
+/* --- Íconos de test --- */
 [data-theme="dark"] .test-icon {
   background: rgba(255, 42, 95, 0.1);
   color: #ff6b8a;
@@ -1527,7 +1527,7 @@ button:active {
 [data-theme="dark"] .test-label strong { color: #e8edf7; }
 [data-theme="dark"] .test-label span   { color: #7b8eac; }
 
-/* --- Cabecera cl�nica (info del paciente) --- */
+/* --- Cabecera clínica (info del paciente) --- */
 [data-theme="dark"] .clinical-header {
   background: rgba(13, 20, 38, 0.85);
   border: 1px solid rgba(255, 42, 95, 0.15);
@@ -1594,7 +1594,7 @@ button:active {
   border: 1px solid rgba(255,42,95,0.2) !important;
 }
 
-/* --- Bot�n secundario oscuro --- */
+/* --- Botón secundario oscuro --- */
 [data-theme="dark"] .btn-secondary {
   background: rgba(20, 32, 60, 0.6);
   border-color: rgba(255, 42, 95, 0.2);
@@ -1645,8 +1645,9 @@ button:active {
 
 
 /* =========================================================
-   RESPONSIVE GRID MODAL REVISI�N
+   RESPONSIVE GRID MODAL REVISIÓN
    ========================================================= */
+.revisar-modal-grid-layout > div { min-width: 0; }
 .revisar-modal-grid-layout {
   display: grid;
   grid-template-columns: 1fr 1.1fr 1.3fr;
@@ -1655,7 +1656,8 @@ button:active {
 }
 
 @media (max-width: 1300px) {
-  .revisar-modal-grid-layout {
+  .revisar-modal-grid-layout > div { min-width: 0; }
+.revisar-modal-grid-layout {
     grid-template-columns: 1fr 1.2fr;
   }
   .revisar-modal-grid-layout > div:nth-child(3) {
@@ -1665,10 +1667,12 @@ button:active {
 }
 
 @media (max-width: 850px) {
-  .revisar-modal-grid-layout {
+  .revisar-modal-grid-layout > div { min-width: 0; }
+.revisar-modal-grid-layout {
     grid-template-columns: 1fr;
   }
   .revisar-modal-grid-layout > div:nth-child(3) {
     grid-column: 1;
   }
 }
+
