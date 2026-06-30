@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   /* Color Palette - Light Mode Default */
   --bg-dark: #fbf9f9;
   --bg-surface: rgba(255, 255, 255, 0.98);
@@ -1673,4 +1673,17 @@ button:active {
   .revisar-modal-grid-layout > div:nth-child(3) {
     grid-column: 1;
   }
+}
+
+/* --- Modales Overlays Themes --- */
+.revisar-modal-overlay {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+.historial-modal-overlay {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="dark"] .revisar-modal-overlay,
+[data-theme="dark"] .historial-modal-overlay {
+  background: rgba(0, 0, 0, 0.78) !important;
 }

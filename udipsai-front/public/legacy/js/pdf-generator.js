@@ -721,7 +721,7 @@
 
       var info = { nombre: nombre, examinador: examina, fechaNac: fmtFecha(fnRaw), fechaEval: fmtFecha(feRaw), edad: edad };
 
-      var colores = { WISC: C.cyan, WPPSI1: C.rojoWPP, WPPSI2: C.verde };
+      var colores = { WISC: C.cyan, WPPSI1: C.rojoWPP, WPPSI2: C.rojoWPP };
       var colorLinea = colores[ev.tipo] || C.cyan;
 
       // Escalares desde datos guardados
@@ -741,8 +741,9 @@
       });
 
       var doc = new jsPDF(crearDoc('landscape'));
+      var tituloTest = (ev.tipo === 'WISC') ? 'Escala de Inteligencia de Wechsler para Niños-V' : 'Escala de Inteligencia de Wechsler para Preescolar y Primaria-IV';
       var y = cabecera(doc, {
-        titulo: (ev.tipoPrueba ? ev.tipoPrueba + '\n' : 'Historial\n') + 'Registro Historico',
+        titulo: tituloTest,
         subtitulo: '',
         logo: window._logoBase64 || null, colorLinea: colorLinea,
         pw: L.pw, margin: L.margin, logoW: 55, logoH: 24

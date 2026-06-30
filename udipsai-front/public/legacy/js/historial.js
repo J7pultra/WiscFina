@@ -130,9 +130,9 @@
     if (!lista) return;
     if (historial.length === 0) {
       lista.innerHTML = `
-        <div style="text-align:center;padding:60px 20px;color:#94a3b8;background:#f8fafc;border-radius:16px;border:2px dashed #e2e8f0;margin-top:20px;">
-          <span class="material-symbols-rounded" style="font-size:64px;display:block;margin-bottom:16px;opacity:0.5;color:#cbd5e1;">history_toggle_off</span>
-          <p style="font-size:1.1rem;margin:0 0 8px;font-weight:600;color:#64748b;">No hay evaluaciones guardadas aún.</p>
+        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);background:var(--bg-surface);border-radius:16px;border:2px dashed var(--border-color);margin-top:20px;">
+          <span class="material-symbols-rounded" style="font-size:64px;display:block;margin-bottom:16px;opacity:0.5;color:var(--text-muted);">history_toggle_off</span>
+          <p style="font-size:1.1rem;margin:0 0 8px;font-weight:600;color:var(--text-main);">No hay evaluaciones guardadas aún.</p>
           <p style="font-size:0.9em;opacity:0.8;">Se guardan automáticamente al calcular resultados.</p>
         </div>`;
       return;
@@ -152,15 +152,15 @@
         : '—';
 
       return `
-        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseenter="this.style.background='#f8fafc'" onmouseleave="this.style.background='transparent'">
+        <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.2s;" onmouseenter="this.style.background='var(--bg-surface-hover)'" onmouseleave="this.style.background='transparent'">
           <td style="padding: 16px 20px;">
             <div style="display:flex;align-items:center;gap:14px;">
               <div style="width:42px;height:42px;border-radius:12px;background:${m.bg};color:${m.text};display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px ${m.border};flex-shrink:0;">
                 <span class="material-symbols-rounded" style="font-size:24px;">${m.icon}</span>
               </div>
               <div>
-                <div style="font-weight:700;font-size:1.05rem;color:#1e293b;margin-bottom:2px;">${ev.nombre || ev.paciente?.nombre || 'Sin nombre'}</div>
-                <div style="font-size:0.85em;color:#64748b;display:flex;align-items:center;gap:4px;">
+                <div style="font-weight:700;font-size:1.05rem;color:var(--text-main);margin-bottom:2px;">${ev.nombre || ev.paciente?.nombre || 'Sin nombre'}</div>
+                <div style="font-size:0.85em;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
                   <span class="material-symbols-rounded" style="font-size:14px;">stethoscope</span>
                   ${ev.examinador || ev.paciente?.examinador || 'N/A'}
                 </div>
@@ -173,18 +173,18 @@
             </div>
           </td>
           <td style="padding: 16px 20px;">
-            <div style="font-weight:600;color:#334155;font-size:0.95rem;margin-bottom:2px;">${fecha} <span style="font-weight:400;color:#94a3b8;font-size:0.9em;">${hora}</span></div>
-            <div style="font-size:0.85em;color:#64748b;display:flex;align-items:center;gap:4px;">
-              <span class="material-symbols-rounded" style="font-size:14px;color:#10b981;">child_care</span>
+            <div style="font-weight:600;color:var(--text-main);font-size:0.95rem;margin-bottom:2px;">${fecha} <span style="font-weight:400;color:var(--text-muted);font-size:0.9em;">${hora}</span></div>
+            <div style="font-size:0.85em;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+              <span class="material-symbols-rounded" style="font-size:14px;color:var(--accent-green);">child_care</span>
               ${edadTexto}
             </div>
           </td>
           <td style="padding: 16px 20px; text-align:right;">
             <button onclick="window.revisarEvaluacion('${ev.id}')"
-              style="padding:8px 12px;background:#ffffff;color:#0f172a;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;"
+              style="padding:8px 12px;background:var(--bg-surface-solid);color:var(--text-main);border:1px solid var(--border-color);border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.2s;"
               title="Revisar Resultados"
-              onmouseenter="this.style.background='#f8fafc';this.style.borderColor='#cbd5e1';this.style.color='${m.text}'" 
-              onmouseleave="this.style.background='#ffffff';this.style.borderColor='#e2e8f0';this.style.color='#0f172a'">
+              onmouseenter="this.style.background='var(--bg-surface-hover)';this.style.color='${m.text}'" 
+              onmouseleave="this.style.background='var(--bg-surface-solid)';this.style.color='var(--text-main)'">
               <span class="material-symbols-rounded" style="font-size:20px;">visibility</span>
             </button>
           </td>
@@ -193,14 +193,14 @@
     }).join('');
 
     lista.innerHTML = `
-      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+      <div style="background:var(--bg-surface-solid);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);">
         <table style="width:100%;border-collapse:collapse;text-align:left;">
-          <thead style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+          <thead style="background:var(--bg-surface);border-bottom:1px solid var(--border-color);">
             <tr>
-              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Paciente</th>
-              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Prueba</th>
-              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Fecha y Edad</th>
-              <th style="padding:16px 20px;font-weight:700;color:#475569;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Acciones</th>
+              <th style="padding:16px 20px;font-weight:700;color:var(--text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Paciente</th>
+              <th style="padding:16px 20px;font-weight:700;color:var(--text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Prueba</th>
+              <th style="padding:16px 20px;font-weight:700;color:var(--text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">Fecha y Edad</th>
+              <th style="padding:16px 20px;font-weight:700;color:var(--text-muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Acciones</th>
             </tr>
           </thead>
           <tbody>

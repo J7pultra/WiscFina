@@ -479,6 +479,9 @@ window.dibujarPerfilWISC = (r) => {
     options: { 
       responsive: true, 
       maintainAspectRatio: false, 
+      plugins: {
+        legend: { display: false }
+      },
       scales: { 
         y: { 
           min: 40, max: 160,
